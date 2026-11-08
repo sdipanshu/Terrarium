@@ -122,3 +122,17 @@ If the pooled share of episodes with useful pre-release method messages is ≤ 1
    - **Labelling:** done by the user, who answers for each message "does it convey a rule that another worker's puzzle 2 uses?".
    - **What is reported:** precision, recall (estimated from the negatives) and Cohen's κ.
    - **If precision is below 0.8:** every hypothesis that uses the detector is flagged as measurement-limited. Results are not re-scored.
+
+4. **2026-11-08 ~15:10 UTC: episodes frozen by host standby are infrastructure failures.**
+   - **What happened:** the host laptop, running on battery, entered Windows Modern Standby when idle (Kernel-Power events 506/507). Standby windows (IST): 13:27–13:42, 16:07–16:20, 17:57–18:42, 18:56–19:05, 19:18–20:35. During standby, episode processes were sometimes frozen. When they resumed, the monotonic clock had jumped, so turns were lost and puzzle 2 could be released and closed at the same instant.
+   - **The criterion, fixed using only infrastructure metrics** (no outcome was computed or looked at): an episode is a **host-suspension failure** if both
+     - its wall-clock span overlaps a standby window, and
+     - its event log has a gap of more than 200 s with no event. The largest such gap in the 256 episodes that did not overlap standby was 120 s.
+   - **Which episodes:** 11 met the criterion:
+     - A: glm-5.2 and qwen3.5-397b at seed 19 `announced_generous`, and all three models at seed 23 `announced_generous`;
+     - N1: all six seed-17 episodes.
+
+     Each is re-run once, as the existing failure rule does. The originals are archived as `failed_infra/*__host_standby`.
+   - **Kept:** 69 other episodes overlapped standby but ran normally. Their largest gap was 64 s, they averaged 0.28 infra errors per episode (vs 0.22 for clean episodes), and their median latency was 4.6 s (vs 3.8 s). They stay in the sample. A sensitivity analysis that excludes every standby-overlapping episode will be reported next to the primary results.
+   - **Earlier re-runs:** the 7 DeepSeek re-runs at seeds 17–19 (more than 3 infra errors) are unaffected. The seed-17 and seed-18 originals were genuine provider HTTP 504s with no standby overlap. The seed-19 originals also overlapped standby.
+   - **Prevention:** from 20:38 IST a keep-awake process holds the system and display awake (SetThreadExecutionState), and the run watchdog alerts on any new standby event or battery power. The same criterion applies to B and F.
