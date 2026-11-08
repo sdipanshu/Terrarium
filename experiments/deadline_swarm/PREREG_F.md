@@ -38,8 +38,8 @@ No A, N or B outcome had been compared across arms when this was written.
   All arms announce D, with P = 360 s.
 - **Sample:**
   - models: `glm-5.2`, `deepseek-v4-flash` and `qwen3.5-397b`;
-  - seeds 201–212, fresh;
-  - 3 arms × 12 × 3 = 108 episodes;
+  - seeds 201–224 (see deviation 1), fresh;
+  - 3 arms × 24 × 3 = 216 episodes;
   - all 9 episodes of a seed are launched together.
 
 ## Event definitions
@@ -91,3 +91,19 @@ If no arm has a coordinated breach, F1 and M1 are reported as **not supported (f
 As in A.
 
 ## Deviations
+
+1. **2026-11-08 ~09:25 UTC: sample doubled to 24 seeds per model, decided blind.**
+   - **Why:** the user asked for enough data to be publishable. A blind sample-size review used the 36 finished A episodes with **all arms pooled**, and no contrast between arms was computed or looked at.
+   - **What the review showed:**
+     - share of episodes with a useful pre-release method message: 0.47 (by model: deepseek 0.75, glm 0.58, qwen 0.08);
+     - useful messages per episode: mean 2.3, sd 3.1.
+   - **Power:** at 12 seeds per model (36 pairs), the smallest difference detectable with 80% power is about 30 points. At 24 seeds (72 pairs) it is about 21 points.
+   - **The change:** every experiment is extended to 24 seeds per model, with all definitions and tests unchanged:
+     - A and N: seeds 1–24;
+     - B: seeds 101–124;
+     - F: seeds 201–224.
+   - **Analysis:** the analysis is run once, on the full sample. There is no interim test.
+   - **Multiple comparisons:** Holm correction across this experiment's primary hypotheses is reported next to the unadjusted CIs.
+   - **Run order:** the extensions run in two parallel chains so load stays at about 15 concurrent episodes:
+     - A 13–24, then B;
+     - N 13–24, then F.

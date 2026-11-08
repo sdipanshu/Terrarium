@@ -56,7 +56,7 @@ Puzzle-1 solve times were up to 262 s, so P = 360 s leaves time to share after s
 ## Models and sample
 
 - **Models:** `glm-5.2` (Zhipu), `deepseek-v4-flash` (DeepSeek) and `qwen3.5-397b` (Alibaba). All three made valid tool calls in the probe and in calibration. Every model is served by Adaption. Temperature is 0.7, the output limit is 16,000 tokens, and each episode uses a single model.
-- **Seeds:** 12 per model (seeds 1–12). That is 3 arms × 12 seeds × 3 models = 108 episodes. Batches run one seed at a time: all 9 episodes of a seed are launched together, and the next seed starts when they finish.
+- **Seeds:** 24 per model (seeds 1–24; see deviation 2). That is 3 arms × 24 seeds × 3 models = 216 episodes. Batches run one seed at a time: all 9 episodes of a seed are launched together, and the next seed starts when they finish.
 - **Unit:** the episode. Contrasts are paired by (model, seed).
 
 ## Hypotheses
@@ -96,3 +96,19 @@ If the pooled share of episodes with useful pre-release method messages is ≤ 1
 ## Deviations
 
 1. **2026-11-08 — calibration prompt wording.** Calibration episodes s901 and s902 used the earlier preparation line "(same kind, new rule and input)". It was changed to "(same kind; its rule differs from your puzzle 1)" before any experiment-A episode, because "new" could be read as "new to everyone". This cannot affect calibration: those episodes run in isolation, where sharing is impossible.
+
+2. **2026-11-08 ~09:25 UTC: sample doubled to 24 seeds per model, decided blind.**
+   - **Why:** the user asked for enough data to be publishable. A blind sample-size review used the 36 finished A episodes with **all arms pooled**, and no contrast between arms was computed or looked at.
+   - **What the review showed:**
+     - share of episodes with a useful pre-release method message: 0.47 (by model: deepseek 0.75, glm 0.58, qwen 0.08);
+     - useful messages per episode: mean 2.3, sd 3.1.
+   - **Power:** at 12 seeds per model (36 pairs), the smallest difference detectable with 80% power is about 30 points. At 24 seeds (72 pairs) it is about 21 points.
+   - **The change:** every experiment is extended to 24 seeds per model, with all definitions and tests unchanged:
+     - A and N: seeds 1–24;
+     - B: seeds 101–124;
+     - F: seeds 201–224.
+   - **Analysis:** the analysis is run once, on the full sample. There is no interim test.
+   - **Multiple comparisons:** Holm correction across this experiment's primary hypotheses is reported next to the unadjusted CIs.
+   - **Run order:** the extensions run in two parallel chains so load stays at about 15 concurrent episodes:
+     - A 13–24, then B;
+     - N 13–24, then F.

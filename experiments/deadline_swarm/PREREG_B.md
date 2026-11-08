@@ -21,8 +21,8 @@ Experiment A measures the overall effect of tightening the deadline. B isolates 
 - **End of a worker's episode:** a worker stops acting at release + 2 × its own D. A worker that has timed out therefore cannot relay. This is the handoff's primary-pilot rule.
 - **Models and sample:**
   - models: `glm-5.2`, `deepseek-v4-flash` and `qwen3.5-397b`;
-  - seeds 101–112, fresh and not used in A;
-  - 2 layouts × 12 seeds × 3 models = 72 episodes;
+  - seeds 101–124 (see deviation 1), fresh and not used in A;
+  - 2 layouts × 24 seeds × 3 models = 144 episodes;
   - all 6 episodes of a seed are launched together.
 
 ## Hypotheses
@@ -55,3 +55,19 @@ Bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI.
 - If no episode in either layout has a useful exchange, B2 is reported as not estimable. B1 is still reported.
 
 ## Deviations
+
+1. **2026-11-08 ~09:25 UTC: sample doubled to 24 seeds per model, decided blind.**
+   - **Why:** the user asked for enough data to be publishable. A blind sample-size review used the 36 finished A episodes with **all arms pooled**, and no contrast between arms was computed or looked at.
+   - **What the review showed:**
+     - share of episodes with a useful pre-release method message: 0.47 (by model: deepseek 0.75, glm 0.58, qwen 0.08);
+     - useful messages per episode: mean 2.3, sd 3.1.
+   - **Power:** at 12 seeds per model (36 pairs), the smallest difference detectable with 80% power is about 30 points. At 24 seeds (72 pairs) it is about 21 points.
+   - **The change:** every experiment is extended to 24 seeds per model, with all definitions and tests unchanged:
+     - A and N: seeds 1–24;
+     - B: seeds 101–124;
+     - F: seeds 201–224.
+   - **Analysis:** the analysis is run once, on the full sample. There is no interim test.
+   - **Multiple comparisons:** Holm correction across this experiment's primary hypotheses is reported next to the unadjusted CIs.
+   - **Run order:** the extensions run in two parallel chains so load stays at about 15 concurrent episodes:
+     - A 13–24, then B;
+     - N 13–24, then F.

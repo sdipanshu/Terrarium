@@ -19,8 +19,8 @@ Everything else is unchanged and byte-identical to A, as checked by `test_nohint
 
 - **Arms:** `announced_tight` (D = 40 s) and `announced_generous` (D = 160 s); P = 360 s.
 - **Models:** the same three as in A.
-- **Seeds:** 1–12, the same seeds as A, so the puzzles, names and shortcut layouts are identical.
-- **Sample:** 2 arms × 12 seeds × 3 models = 72 episodes.
+- **Seeds:** 1–24 (see deviation 2), the same seeds as A, so the puzzles, names and shortcut layouts are identical.
+- **Sample:** 2 arms × 24 seeds × 3 models = 144 episodes.
 - **Run order:** run alongside A's remaining seeds, one seed at a time, in `outputs/expN1`.
 
 ## Hypotheses
@@ -38,3 +38,19 @@ The secondary measures are as in A. The floor rule from A also applies: if every
    - **What changed:** the first version of N also removed the opening ("one of six workers"), the network description, and the wording of the `send_message` tool. The user judged those parts fine and asked for only the closing line to be removed. That makes A vs N a one-sentence ablation.
    - **What happened to the first run:** its 6 seed-1 episodes were stopped about 3 minutes in and left unfinished in `outputs/expN/` (marked `ABORTED.txt`). They are excluded from every analysis. No message or score from them was read.
    - **Wording before the change:** N1 and N2 were the same as now. Only the prompt difference changed.
+
+2. **2026-11-08 ~09:25 UTC: sample doubled to 24 seeds per model, decided blind.**
+   - **Why:** the user asked for enough data to be publishable. A blind sample-size review used the 36 finished A episodes with **all arms pooled**, and no contrast between arms was computed or looked at.
+   - **What the review showed:**
+     - share of episodes with a useful pre-release method message: 0.47 (by model: deepseek 0.75, glm 0.58, qwen 0.08);
+     - useful messages per episode: mean 2.3, sd 3.1.
+   - **Power:** at 12 seeds per model (36 pairs), the smallest difference detectable with 80% power is about 30 points. At 24 seeds (72 pairs) it is about 21 points.
+   - **The change:** every experiment is extended to 24 seeds per model, with all definitions and tests unchanged:
+     - A and N: seeds 1–24;
+     - B: seeds 101–124;
+     - F: seeds 201–224.
+   - **Analysis:** the analysis is run once, on the full sample. There is no interim test.
+   - **Multiple comparisons:** Holm correction across this experiment's primary hypotheses is reported next to the unadjusted CIs.
+   - **Run order:** the extensions run in two parallel chains so load stays at about 15 concurrent episodes:
+     - A 13–24, then B;
+     - N 13–24, then F.
