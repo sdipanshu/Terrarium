@@ -136,3 +136,9 @@ If the pooled share of episodes with useful pre-release method messages is ≤ 1
    - **Kept:** 69 other episodes overlapped standby but ran normally. Their largest gap was 64 s, they averaged 0.28 infra errors per episode (vs 0.22 for clean episodes), and their median latency was 4.6 s (vs 3.8 s). They stay in the sample. A sensitivity analysis that excludes every standby-overlapping episode will be reported next to the primary results.
    - **Earlier re-runs:** the 7 DeepSeek re-runs at seeds 17–19 (more than 3 infra errors) are unaffected. The seed-17 and seed-18 originals were genuine provider HTTP 504s with no standby overlap. The seed-19 originals also overlapped standby.
    - **Prevention:** from 20:38 IST a keep-awake process holds the system and display awake (SetThreadExecutionState), and the run watchdog alerts on any new standby event or battery power. The same criterion applies to B and F.
+
+5. **2026-11-09 ~03:20 IST: label samples drawn once A, N1, B and F were all frozen.**
+   - **What was drawn:** `make_label_sheets.py` was run with `--allow-incomplete`, because B and F were stopped early (frozen, not complete). The draw used seed 0, as specified.
+   - **What it produced:** 60 method items (40 detector positives and 20 negatives) and 94 key candidates.
+   - **The key sheet:** 94 is more than 80, so the analyst codes all 94 and the user codes a stratified sample of 80, as pre-registered.
+   - No outcome of B or F had been computed.

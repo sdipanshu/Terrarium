@@ -86,3 +86,9 @@ The secondary measures are as in A. The floor rule from A also applies: if every
      - deepseek-v4-flash: seeds 1–23, giving 71 (model, seed) pairs.
    - **Kept but flagged:** DeepSeek episodes over the infra limit stay in the primary analysis. Two sensitivity analyses are reported: one excluding them, and one excluding every standby-overlapping episode.
    - **No later N1 episodes are analysed.**
+
+6. **2026-11-09 ~03:20 IST: label samples drawn once A, N1, B and F were all frozen.**
+   - **What was drawn:** `make_label_sheets.py` was run with `--allow-incomplete`, because B and F were stopped early (frozen, not complete). The draw used seed 0, as specified.
+   - **What it produced:** 60 method items (40 detector positives and 20 negatives) and 94 key candidates.
+   - **The key sheet:** 94 is more than 80, so the analyst codes all 94 and the user codes a stratified sample of 80, as pre-registered.
+   - No outcome of B or F had been computed.

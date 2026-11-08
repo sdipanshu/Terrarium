@@ -114,3 +114,9 @@ Bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI.
    - **Why:** at the provider's ~50 requests/min cap (deviation 4), B and F could not reach a useful size by the deadline. The user chose to give the remaining capacity to a new experiment (P).
    - **The analysed sample:** every B episode finished at this point. B is reported as a **pilot**, and its CIs are reported at that size.
    - **No later B episodes are analysed.**
+
+6. **2026-11-09 ~03:20 IST: label samples drawn once A, N1, B and F were all frozen.**
+   - **What was drawn:** `make_label_sheets.py` was run with `--allow-incomplete`, because B and F were stopped early (frozen, not complete). The draw used seed 0, as specified.
+   - **What it produced:** 60 method items (40 detector positives and 20 negatives) and 94 key candidates.
+   - **The key sheet:** 94 is more than 80, so the analyst codes all 94 and the user codes a stratified sample of 80, as pre-registered.
+   - No outcome of B or F had been computed.
