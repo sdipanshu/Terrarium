@@ -8,6 +8,7 @@ episodes over the limit that were never archived before (single re-run rule), pr
 script. Cells still running are never touched, so the main queues and the sweeper cannot collide.
 Exits once every experiment is complete and nothing is pending.
 """
+import argparse
 import shutil
 import subprocess
 import sys
@@ -63,11 +64,14 @@ def complete():
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--models", default=",".join(MODELS))
+    args = ap.parse_args()
     client = AdaptionClient(OUT / "probe_sweeper.jsonl", timeout=90)
     while True:
         did = False
         for exp, (script, seeds, _) in EXPS.items():
-            for model in MODELS:
+            for model in args.models.split(","):
                 for seed in seeds:
                     over = pending(exp, model, seed)
                     if not over:
