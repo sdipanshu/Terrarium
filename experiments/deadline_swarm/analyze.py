@@ -99,6 +99,28 @@ def episode_measures(ep_dir):
             "infra_errors": infra}
 
 
+def episode_dirs(root):
+    """Finished episodes directly under root; archived originals in failed_infra/ are excluded."""
+    return sorted(p.parent for p in Path(root).glob("*/results.json"))
+
+
+def holm(pvals):
+    """Holm step-down adjusted p-values, same order as given."""
+    order = sorted(range(len(pvals)), key=lambda i: pvals[i])
+    adj, running = [0.0] * len(pvals), 0.0
+    for rank, i in enumerate(order):
+        running = max(running, min(1.0, (len(pvals) - rank) * pvals[i]))
+        adj[i] = running
+    return adj
+
+
+def boot_p(boots, null=0.0, side="greater"):
+    """Bootstrap p-value for H1: mean > null (side='greater'), < null ('less') or != null ('two')."""
+    lo = sum(b <= null for b in boots) / len(boots)
+    hi = sum(b >= null for b in boots) / len(boots)
+    return {"greater": lo, "less": hi, "two": min(1.0, 2 * min(lo, hi))}[side]
+
+
 def paired_diff(rows, a, b, key, n_boot=10000):
     by = defaultdict(dict)
     for r in rows:
@@ -108,7 +130,8 @@ def paired_diff(rows, a, b, key, n_boot=10000):
         return None
     rng = random.Random(0)
     boots = sorted(sum(rng.choice(d) for _ in d) / len(d) for _ in range(n_boot))
-    return {"n": len(d), "mean": sum(d) / len(d), "ci": (boots[int(.025 * n_boot)], boots[int(.975 * n_boot) - 1])}
+    return {"n": len(d), "mean": sum(d) / len(d), "ci": (boots[int(.025 * n_boot)], boots[int(.975 * n_boot) - 1]),
+            "boots": boots}
 
 
 def main():
@@ -116,8 +139,7 @@ def main():
     ap.add_argument("root")
     ap.add_argument("--pairs", default="announced_tight,announced_generous")
     args = ap.parse_args()
-    dirs = sorted(p.parent for p in Path(args.root).rglob("results.json"))
-    rows = [episode_measures(d) for d in dirs]
+    rows = [episode_measures(d) for d in episode_dirs(args.root)]
     for r in rows:
         print(json.dumps(r))
     a, b = args.pairs.split(",")
