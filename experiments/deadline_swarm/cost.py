@@ -21,7 +21,10 @@ def main():
     for f in root.rglob("requests.jsonl"):
         group = f.relative_to(root).parts[0]
         for line in f.read_text(encoding="utf-8").splitlines():
-            r = json.loads(line)
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:   # a line still being written by a live episode
+                continue
             resp = r.get("response")
             if not resp:
                 continue
