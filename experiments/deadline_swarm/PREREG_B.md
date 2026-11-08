@@ -109,3 +109,8 @@ Bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI.
    - **Stopping rule (fixed before any B or F outcome was computed or looked at):** no new slot is launched after 08:00 IST on 2026-11-09. The analysed sample is every (model, seed) cell completed by then. Because seeds run in ascending order with all models together, the sample is balanced across models and arms up to the last seed reached.
    - **What is reported:** the number of seeds per model, and the minimum detectable difference at that sample size. Results are not otherwise re-scored.
    - **Interrupted re-runs:** re-runs stopped by the operator during the 429 episode (DeepSeek F seeds 201–202) never reached their end. They are treated as not having run, and the single re-run is repeated.
+
+5. **2026-11-09 ~01:25 IST: B stopped early by the user's decision, to run experiment P; sample frozen before any B outcome was computed.**
+   - **Why:** at the provider's ~50 requests/min cap (deviation 4), B and F could not reach a useful size by the deadline. The user chose to give the remaining capacity to a new experiment (P).
+   - **The analysed sample:** every B episode finished at this point. B is reported as a **pilot**, and its CIs are reported at that size.
+   - **No later B episodes are analysed.**

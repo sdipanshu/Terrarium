@@ -32,6 +32,7 @@ EXPS = {  # name: (batch script, seeds, arms per (model, seed))
     "expN1": ("run_batch_nohint.py", range(1, 25), 2),
     "expB": ("run_batch_b.py", range(101, 125), 2),
     "expF": ("run_batch_f.py", range(201, 225), 3),
+    "expP": ("run_batch_p.py", range(301, 313), 2),
 }
 INFRA_LIMIT = 3
 _lock = threading.Lock()
@@ -101,7 +102,7 @@ def run_slot(exp, seed, models, size, rerun):
 
 
 ARMS = {"expN1": ["announced_tight", "announced_generous"], "expB": ["alternating", "clustered"],
-        "expF": ["F_tight", "F_generous", "FM_tight"]}
+        "expF": ["F_tight", "F_generous", "FM_tight"], "expP": ["P_announce", "P_control"]}
 
 
 def run_episode(exp, model, seed, arm):
@@ -234,6 +235,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--budget", type=int, default=4, help="max concurrent episodes")
     ap.add_argument("--stop-at", default="08:00", help="local HH:MM after which no new slot is launched")
+    ap.add_argument("--only", help="run just this experiment, seeds ascending (e.g. expP)")
     args = ap.parse_args()
     while live_episodes():   # never archive a directory an earlier queue is still running
         say("waiting for live episodes from an earlier queue")
@@ -249,6 +251,8 @@ def main():
     # (N1 has all 24 seeds; its remaining work is DeepSeek re-runs and DeepSeek s24).
     order = [x for pair in zip(EXPS["expF"][1], EXPS["expB"][1]) for x in (("expF", pair[0]), ("expB", pair[1]))]
     order += [(e, s) for e in ("expA", "expN1") for s in EXPS[e][1]]
+    if args.only:
+        order = [(args.only, s) for s in EXPS[args.only][1]]
     deferred = []
 
     def do(exp, seed, model, wait_ds):
