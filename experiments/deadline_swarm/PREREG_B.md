@@ -71,3 +71,13 @@ Bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI.
    - **Run order:** the extensions run in two parallel chains so load stays at about 15 concurrent episodes:
      - A 13–24, then B;
      - N 13–24, then F.
+
+2. **2026-11-08 ~09:35 UTC: label validation becomes a sample, set before any analysis.**
+   - **Why:** checking every automatic positive by hand would mean about 500 messages in A alone. The user agreed to this change. No contrast between arms had been computed.
+   - **The new procedure:** one blind sheet covering A, N and B, drawn once all runs are complete (seed 0):
+     - **40 detector positives and 20 detector negatives**;
+     - stratified by experiment and model;
+     - arm, model and episode labels removed, and order shuffled.
+   - **Labelling:** done by the user, who answers for each message "does it convey a rule that another worker's puzzle 2 uses?".
+   - **What is reported:** precision, recall (estimated from the negatives) and Cohen's κ.
+   - **If precision is below 0.8:** every hypothesis that uses the detector is flagged as measurement-limited. Results are not re-scored.

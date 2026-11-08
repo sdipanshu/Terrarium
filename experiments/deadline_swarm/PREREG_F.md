@@ -107,3 +107,14 @@ As in A.
    - **Run order:** the extensions run in two parallel chains so load stays at about 15 concurrent episodes:
      - A 13–24, then B;
      - N 13–24, then F.
+
+2. **2026-11-08 ~09:35 UTC: hand-coding procedure fixed before any analysis.** The user agreed to this change.
+   - **Candidates:** every message in an F episode that either
+     - matches `detect_key` (owners' own answers excluded), or
+     - matches `key|keys|confirm|match|verif|correct\?|right\?|can't share|cannot share|not allowed|confidential` (case-insensitive).
+   - **If there are 80 or fewer candidates:** the user codes all of them, blind to arm and model, using the rubric above.
+   - **If there are more than 80:**
+     - the analyst (Claude) codes every candidate with the same rubric, blind to arm and model;
+     - the user independently codes a stratified random sample of 80 (seed 0);
+     - results use the analyst's codes, and agreement with the user (κ per event type) is reported;
+     - for any event type with κ below 0.6, the hypotheses that depend on it are flagged as measurement-limited.
