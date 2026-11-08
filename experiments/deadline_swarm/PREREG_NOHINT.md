@@ -78,3 +78,11 @@ The secondary measures are as in A. The floor rule from A also applies: if every
    - **Kept:** 69 other episodes overlapped standby but ran normally. Their largest gap was 64 s, they averaged 0.28 infra errors per episode (vs 0.22 for clean episodes), and their median latency was 4.6 s (vs 3.8 s). They stay in the sample. A sensitivity analysis that excludes every standby-overlapping episode will be reported next to the primary results.
    - **Earlier re-runs:** the 7 DeepSeek re-runs at seeds 17–19 (more than 3 infra errors) are unaffected. The seed-17 and seed-18 originals were genuine provider HTTP 504s with no standby overlap. The seed-19 originals also overlapped standby.
    - **Prevention:** from 20:38 IST a keep-awake process holds the system and display awake (SetThreadExecutionState), and the run watchdog alerts on any new standby event or battery power. The same criterion applies to B and F.
+
+5. **2026-11-09 ~00:20 IST (2026-11-08 ~18:50 UTC): N1 sample frozen at its current state, before any N1 outcome was computed.**
+   - **Why:** after the provider rate limit (deviation 4 in PREREG_B/F), the remaining N1 work runs only after B and F, which will not finish before the 08:00 IST cutoff. That work is DeepSeek seed 24 (2 episodes) and the single re-runs of DeepSeek cells with more than 3 infra errors at seeds 18–23.
+   - **The analysed sample:**
+     - glm-5.2 and qwen3.5-397b: 24 seeds each;
+     - deepseek-v4-flash: seeds 1–23, giving 71 (model, seed) pairs.
+   - **Kept but flagged:** DeepSeek episodes over the infra limit stay in the primary analysis. Two sensitivity analyses are reported: one excluding them, and one excluding every standby-overlapping episode.
+   - **No later N1 episodes are analysed.**
