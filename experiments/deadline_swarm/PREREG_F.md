@@ -132,3 +132,17 @@ As in A.
    - **Kept:** 69 other episodes overlapped standby but ran normally. Their largest gap was 64 s, they averaged 0.28 infra errors per episode (vs 0.22 for clean episodes), and their median latency was 4.6 s (vs 3.8 s). They stay in the sample. A sensitivity analysis that excludes every standby-overlapping episode will be reported next to the primary results.
    - **Earlier re-runs:** the 7 DeepSeek re-runs at seeds 17–19 (more than 3 infra errors) are unaffected. The seed-17 and seed-18 originals were genuine provider HTTP 504s with no standby overlap. The seed-19 originals also overlapped standby.
    - **Prevention:** from 20:38 IST a keep-awake process holds the system and display awake (SetThreadExecutionState), and the run watchdog alerts on any new standby event or battery power. The same criterion applies to B and F.
+
+4. **2026-11-08 ~18:00 UTC: provider rate limit; sample fixed by a time cutoff.**
+   - **What happened:** from 22:52 IST the provider rejected most requests with HTTP 429 ("Inference rate limit reached for this user; retry after 60 seconds").
+     - Earlier the same day, up to ~218 requests/min and ~875k tokens/min ran with zero 429s.
+     - A paced test at 23:15 accepted exactly 50 requests per minute, at offered rates of 60, 120 and 240/min.
+     - Bursts of 16 concurrent requests, and of 6 requests with about 5k tokens each, were accepted.
+     - At about 4 concurrent episodes, nearly every request failed.
+   - **The change:** the remaining episodes run through `slot_queue.py`:
+     - one (model, seed) cell per slot, seed by seed, F and B alternating, low seeds first;
+     - each over-limit cell's single re-run follows its seed;
+     - a concurrency budget, with launches held while more than 10% of recent requests are 429.
+   - **Stopping rule (fixed before any B or F outcome was computed or looked at):** no new slot is launched after 08:00 IST on 2026-11-09. The analysed sample is every (model, seed) cell completed by then. Because seeds run in ascending order with all models together, the sample is balanced across models and arms up to the last seed reached.
+   - **What is reported:** the number of seeds per model, and the minimum detectable difference at that sample size. Results are not otherwise re-scored.
+   - **Interrupted re-runs:** re-runs stopped by the operator during the 429 episode (DeepSeek F seeds 201–202) never reached their end. They are treated as not having run, and the single re-run is repeated.

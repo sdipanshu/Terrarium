@@ -13,6 +13,7 @@ slot size <= budget. Order:
 Incomplete directories left by stopped runs are archived by the batch scripts before their re-run.
 """
 import argparse
+import json
 import shutil
 import subprocess
 import sys
@@ -109,6 +110,11 @@ def launch(exp, seed, models, rerun, budget):
         return
     while True:
         budget = current_budget(budget)
+        share = recent_429_share()
+        if share > 0.10:
+            say(f"rate limit: {share:.0%} of recent requests are HTTP 429; holding launches")
+            time.sleep(60)
+            continue
         with _lock:
             if running + size <= budget or running == 0:
                 running += size
@@ -116,6 +122,23 @@ def launch(exp, seed, models, rerun, budget):
         time.sleep(10)
     say(f"start {exp} s{seed} {','.join(models)} ({size} episodes{', re-run' if rerun else ''}); running {running}")
     threading.Thread(target=run_slot, args=(exp, seed, models, size, rerun)).start()
+
+
+def recent_429_share(window=120):
+    """Share of requests ending in the last `window` s that got HTTP 429 (monotonic clock is machine-wide)."""
+    now, n, bad = time.monotonic(), 0, 0
+    for f in OUT.glob("exp*/*__*/requests.jsonl"):
+        if time.time() - f.stat().st_mtime > window:
+            continue
+        for line in f.read_text(encoding="utf-8").splitlines()[-40:]:
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if now - r.get("t_end", 0) <= window:
+                n += 1
+                bad += r.get("http_status") == 429
+    return bad / n if n >= 10 else 0.0
 
 
 BUDGET_FILE = OUT / "slot_budget.txt"
@@ -146,7 +169,8 @@ def wait_all():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--budget", type=int, default=9, help="max concurrent episodes")
+    ap.add_argument("--budget", type=int, default=4, help="max concurrent episodes")
+    ap.add_argument("--stop-at", default="08:00", help="local HH:MM after which no new slot is launched")
     args = ap.parse_args()
     while live_episodes():   # never archive a directory an earlier queue is still running
         say("waiting for live episodes from an earlier queue")
@@ -154,37 +178,45 @@ def main():
     BUDGET_FILE.write_text(str(args.budget))
     client = AdaptionClient(OUT / "probe_slot_queue.jsonl", timeout=90)
     say(f"start, budget {args.budget}")
+    stop_at = time.mktime(time.strptime(time.strftime("%Y-%m-%d ") + args.stop_at, "%Y-%m-%d %H:%M"))
+    if stop_at < time.time():
+        stop_at += 86400
+    # F and B seeds alternating, low seeds first, so whatever finishes by the cutoff is balanced across
+    # models; each (model, seed) cell is its own slot, re-run right after its seed. A/N1 leftovers last
+    # (N1 has all 24 seeds; its remaining work is DeepSeek re-runs and DeepSeek s24).
     order = [x for pair in zip(EXPS["expF"][1], EXPS["expB"][1]) for x in (("expF", pair[0]), ("expB", pair[1]))]
+    order += [(e, s) for e in ("expA", "expN1") for s in EXPS[e][1]]
     deferred = []
-    for exp, seed in order:                                   # phase 1
-        models = [m for m in MODELS if incomplete(exp, m, seed)]
-        if DS in models and not ds_fast(client):
-            models.remove(DS)
-            deferred.append((exp, seed))
-            say(f"DeepSeek slow/unhealthy: {exp} s{seed} deferred")
-        if models:
-            launch(exp, seed, models, False, args.budget)
+
+    def do(exp, seed, model, wait_ds):
+        if time.time() > stop_at:
+            return False
+        if model == DS and (incomplete(exp, model, seed) or over_limit(exp, model, seed)):
+            while not ds_fast(client):
+                if not wait_ds:
+                    deferred.append((exp, seed))
+                    say(f"DeepSeek slow/unhealthy: {exp} s{seed} deferred")
+                    return True
+                say(f"DeepSeek slow/unhealthy; {exp} s{seed} waits 5 min")
+                time.sleep(300)
+        if incomplete(exp, model, seed):
+            launch(exp, seed, [model], False, args.budget)
+        elif over_limit(exp, model, seed):
+            launch(exp, seed, [model], True, args.budget)
+        return True
+
+    for exp, seed in order:
+        for model in MODELS:
+            if not do(exp, seed, model, wait_ds=False):
+                say(f"stop time {args.stop_at} reached; no new launches")
+                wait_all()
+                say("ALL DONE (time cutoff)")
+                return
     wait_all()
-    say("phase 1 done")
-    for exp, (_, seeds, _) in EXPS.items():                   # phase 2: anything still incomplete
-        for seed in seeds:
-            models = [m for m in MODELS if incomplete(exp, m, seed)]
-            if DS in models:
-                while not ds_fast(client):
-                    say(f"DeepSeek slow/unhealthy; {exp} s{seed} waits 5 min")
-                    time.sleep(300)
-            if models:
-                launch(exp, seed, models, False, args.budget)
-    wait_all()
-    say("phase 2 done")
-    for exp, (_, seeds, _) in EXPS.items():                   # phase 3: single re-runs
-        for seed in seeds:
-            models = [m for m in MODELS if over_limit(exp, m, seed)]
-            if DS in models and not ds_fast(client):
-                say(f"DeepSeek slow/unhealthy: its re-run of {exp} s{seed} is skipped")
-                models.remove(DS)
-            if models:
-                launch(exp, seed, models, True, args.budget)
+    for exp, seed in deferred + order:                         # deferred DeepSeek cells, then any re-run still due
+        for model in MODELS:
+            if not do(exp, seed, model, wait_ds=True):
+                break
     wait_all()
     say("ALL DONE")
 
