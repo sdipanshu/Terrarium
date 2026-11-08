@@ -148,7 +148,7 @@ class Episode:
             limit = "Its time limit will be shown when it is released."
         return (f"TIME: {fmt_t(self.clock.now())}\n"
                 + puzzles.render(self.assign["p1"][agent], f"P1-{agent}") + "\n\n"
-                f"NEXT TASK: puzzle 2 (same kind, new rule and input) will be released at "
+                f"NEXT TASK: puzzle 2 (same kind; its rule differs from your puzzle 1) will be released at "
                 f"{fmt_t(cfg.prep_seconds)}.\n{limit}")
 
     def status_line(self):
