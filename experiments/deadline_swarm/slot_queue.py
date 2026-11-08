@@ -127,7 +127,7 @@ def launch_episode(exp, model, seed, arm, budget):
     while True:
         budget = current_budget(budget)
         share = recent_429_share()
-        if share > 0.10:
+        if share > current_threshold():
             say(f"rate limit: {share:.0%} of recent requests are HTTP 429; holding launches")
             time.sleep(60)
             continue
@@ -175,7 +175,7 @@ def launch(exp, seed, models, rerun, budget):
     while True:
         budget = current_budget(budget)
         share = recent_429_share()
-        if share > 0.10:
+        if share > current_threshold():
             say(f"rate limit: {share:.0%} of recent requests are HTTP 429; holding launches")
             time.sleep(60)
             continue
@@ -206,6 +206,15 @@ def recent_429_share(window=120):
 
 
 BUDGET_FILE = OUT / "slot_budget.txt"
+THRESHOLD_FILE = OUT / "slot_429_threshold.txt"
+
+
+def current_threshold(default=0.10):
+    """429 share above which launches are held; change it while running via outputs/slot_429_threshold.txt."""
+    try:
+        return float(THRESHOLD_FILE.read_text().strip())
+    except (OSError, ValueError):
+        return default
 
 
 def current_budget(default):
