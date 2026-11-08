@@ -101,13 +101,26 @@ def ds_cell(client, exp, seed, rerun):
     say(f"ds: {exp} s{seed} exit {rc}")
 
 
+def ds_live():
+    ps = ("(Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'python' -and "
+          "$_.CommandLine -match 'deepseek' -and $_.CommandLine -match '--one|run\\.py ' }).Count")
+    out = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True).stdout
+    return int(out.strip() or 0)
+
+
+DS_WORKERS = 2
+
+
 def ds_stream():
+    while ds_live():   # a restarted DeepSeek stream must not archive cells a previous one is still running
+        say("ds: waiting for live DeepSeek episodes from a previous stream")
+        time.sleep(60)
     client = AdaptionClient(OUT / "probe_ds_queue.jsonl", timeout=90)
     b, f = EXPS["expB"][1], EXPS["expF"][1]
     missing = [x for pair in zip(b, f) for x in (("expB", pair[0]), ("expF", pair[1]))]
     missing += [("expN1", s) for s in EXPS["expN1"][1]] + [("expA", s) for s in EXPS["expA"][1]]
     missing = [(e, s) for e, s in missing if ds_cells_done(e, s) < EXPS[e][2]]
-    with ThreadPoolExecutor(max_workers=2) as pool:
+    with ThreadPoolExecutor(max_workers=DS_WORKERS) as pool:
         list(pool.map(lambda c: ds_cell(client, c[0], c[1], False), missing))
     over = []
     for exp, (_, seeds, _) in EXPS.items():
@@ -117,7 +130,7 @@ def ds_stream():
                    for p in root.glob(f"{DS}__s{s}__*") if (p / "results.json").exists()):
                 over.append((exp, s))
     say(f"ds: missing cells done; {len(over)} over-limit cells to re-run once")
-    with ThreadPoolExecutor(max_workers=2) as pool:
+    with ThreadPoolExecutor(max_workers=DS_WORKERS) as pool:
         list(pool.map(lambda c: ds_cell(client, c[0], c[1], True), over))
     say("ds: ALL DONE")
 
@@ -139,7 +152,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--streams", default="gq1,gq2,ds", help="gq1, gq2, gq2F (F once N1 batch exits), ds")
     ap.add_argument("--no-wait", action="store_true", help="skip waiting for live episodes")
+    ap.add_argument("--ds-workers", type=int, default=2, help="DeepSeek cells run at once")
     args = ap.parse_args()
+    global DS_WORKERS
+    DS_WORKERS = args.ds_workers
     while not args.no_wait and (n := live_episodes()) > 0:
         say(f"waiting for {n} live episode processes to finish")
         time.sleep(60)
