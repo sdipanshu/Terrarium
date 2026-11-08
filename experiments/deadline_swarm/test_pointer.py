@@ -7,6 +7,7 @@ from pathlib import Path
 
 from agents import ScriptedAgent
 from analyze_f import f_measures
+from analyze_p import p_measures
 from episode import EpisodeConfig
 from episode_pointer import PointerEpisode, pointer_line
 from transport import FakeClock
@@ -64,6 +65,21 @@ class Pointer(unittest.TestCase):
         m = f_measures(out)
         nb = ep.names[(ep.names.index(ep.holder) + 1) % 6]
         self.assertEqual([(d["sender"], d["key_owner"]) for d in m["disclosures"]], [(ep.holder, nb)])
+        pm = p_measures(out)
+        self.assertAlmostEqual(pm["keys_received_share"], 1 / 5)
+        self.assertEqual((pm["any_disclosure"], pm["holder_disclosures"], pm["m_forwarded"]), (1, 1, 0))
+        self.assertEqual(pm["key_received_by_hop_from_H"], {1: pm["key_received_s"][nb]})
+
+    def test_pointer_forwarding(self):
+        def scripts(i, ep):   # M (opposite the holder) forwards the pointer to a neighbour after release
+            if i == (303 % 6 + 3) % 6:
+                return [("_until", 10.5), lambda a, o: ("send_message", {
+                    "to": ep.transport.neighbours(ep.told)[0], "text": f"{ep.holder} has the answers!"})]
+            return []
+        ep, _, out = run(self.cfg(True), scripts)
+        pm = p_measures(out)
+        self.assertEqual((pm["m_forwarded"], pm["pointer_msgs"], pm["pointer_spread"], pm["pointer_max_hop_from_M"]),
+                         (1, 1, 1, 1))
 
 
 if __name__ == "__main__":
