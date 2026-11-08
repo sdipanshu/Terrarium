@@ -12,6 +12,7 @@ different time from glm/qwen cells of the same seed without breaking pairing. St
 glm/qwen over-limit re-runs stay with rerun_sweeper.py --models glm-5.2,qwen3.5-397b.
 Waits first until no episode process is alive, so no batch script archives a live directory.
 """
+import argparse
 import shutil
 import subprocess
 import sys
@@ -61,8 +62,27 @@ def ds_cells_done(exp, seed):
     return len([p for p in (OUT / exp).glob(f"{DS}__s{seed}__*") if (p / "results.json").exists()])
 
 
+def ds_healthy(client):
+    """DeepSeek is 'healthy' only if 3 consecutive short requests each finish in under 20 s.
+    Healthy hours had a median latency of ~3 s; during the 20:00+ overload successful calls took
+    ~44 s and the gateway cut anything past 60 s, while a one-word probe still passed."""
+    payload = {"model": DS, "input": [{"role": "user", "content": "What is 17 * 23? Reply with the number only."}],
+               "max_output_tokens": 400}
+    for _ in range(3):
+        t0 = time.monotonic()
+        try:
+            client.create(payload, actor="probe")
+        except Exception as exc:  # noqa: BLE001 - any failure means not healthy
+            say(f"ds: probe failed: {str(exc)[:60]}")
+            return False
+        if time.monotonic() - t0 > 20:
+            say(f"ds: probe slow ({time.monotonic() - t0:.0f}s)")
+            return False
+    return True
+
+
 def ds_cell(client, exp, seed, rerun):
-    while not healthy(client, DS):
+    while not ds_healthy(client):
         say(f"ds: unhealthy; {exp} s{seed} waits 5 min")
         time.sleep(300)
     if rerun:
@@ -102,14 +122,33 @@ def ds_stream():
     say("ds: ALL DONE")
 
 
+def batch_running(script):
+    ps = (f"(Get-CimInstance Win32_Process | Where-Object {{ $_.Name -match 'python' -and "
+          f"$_.CommandLine -match '{script}' -and $_.CommandLine -notmatch '--one' }}).Count")
+    out = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True).stdout
+    return int(out.strip() or 0) > 0
+
+
+def f_after_n1():
+    while batch_running("run_batch_nohint"):
+        time.sleep(60)
+    stream("gq2F", [("expF", "201-224")])
+
+
 def main():
-    while (n := live_episodes()) > 0:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--streams", default="gq1,gq2,ds", help="gq1, gq2, gq2F (F once N1 batch exits), ds")
+    ap.add_argument("--no-wait", action="store_true", help="skip waiting for live episodes")
+    args = ap.parse_args()
+    while not args.no_wait and (n := live_episodes()) > 0:
         say(f"waiting for {n} live episode processes to finish")
         time.sleep(60)
-    say("starting streams")
-    threads = [threading.Thread(target=stream, args=("gq1", [("expB", "101-124")])),
-               threading.Thread(target=stream, args=("gq2", [("expN1", "13-24"), ("expF", "201-224")])),
-               threading.Thread(target=ds_stream)]
+    say(f"starting streams {args.streams}")
+    make = {"gq1": lambda: threading.Thread(target=stream, args=("gq1", [("expB", "101-124")])),
+            "gq2": lambda: threading.Thread(target=stream, args=("gq2", [("expN1", "13-24"), ("expF", "201-224")])),
+            "gq2F": lambda: threading.Thread(target=f_after_n1),
+            "ds": lambda: threading.Thread(target=ds_stream)}
+    threads = [make[s]() for s in args.streams.split(",")]
     for t in threads:
         t.start()
     for t in threads:
