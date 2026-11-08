@@ -100,6 +100,69 @@ def run_slot(exp, seed, models, size, rerun):
             running -= size
 
 
+ARMS = {"expN1": ["announced_tight", "announced_generous"], "expB": ["alternating", "clustered"],
+        "expF": ["F_tight", "F_generous", "FM_tight"]}
+
+
+def run_episode(exp, model, seed, arm):
+    global running
+    root = OUT / exp
+    out = root / f"{model}__s{seed}__{arm}"
+    try:
+        cmd = [sys.executable, "-W", "ignore", str(HERE / EXPS[exp][0]), "--one", model, str(seed), arm, str(out)]
+        with open(root / f"{out.name}.log", "w") as log:
+            rc = subprocess.call(cmd, cwd=HERE, stdout=log, stderr=subprocess.STDOUT)
+        say(f"{exp}/{out.name} exit {rc}")
+    finally:
+        with _lock:
+            running -= 1
+
+
+def launch_episode(exp, model, seed, arm, budget):
+    """One episode per slot (glm/qwen F cells of 3 exceeded the ~50 req/min cap when launched together)."""
+    global running
+    root = OUT / exp
+    out = root / f"{model}__s{seed}__{arm}"
+    while True:
+        budget = current_budget(budget)
+        share = recent_429_share()
+        if share > 0.10:
+            say(f"rate limit: {share:.0%} of recent requests are HTTP 429; holding launches")
+            time.sleep(60)
+            continue
+        with _lock:
+            if running + 1 <= budget:
+                running += 1
+                break
+        time.sleep(10)
+    if out.exists() and not (out / "results.json").exists():          # incomplete: archive, as the batch scripts do
+        dest = root / "failed_infra" / f"{out.name}__{int(time.time())}"
+        dest.parent.mkdir(exist_ok=True)
+        shutil.move(str(out), str(dest))
+        say(f"archived incomplete {exp}/{out.name}")
+    elif out.exists():                                                  # finished but over the infra limit
+        n, dest = infra_count(out), root / "failed_infra" / f"{out.name}__over3_infra"
+        dest.parent.mkdir(exist_ok=True)
+        shutil.move(str(out), str(dest))
+        if (root / f"{out.name}.log").exists():
+            shutil.move(str(root / f"{out.name}.log"), str(dest) + ".log")
+        say(f"archived {exp}/{out.name} ({n} infra errors); re-running once")
+    say(f"start {exp}/{out.name}; running {running}")
+    threading.Thread(target=run_episode, args=(exp, model, seed, arm)).start()
+
+
+def episodes_due(exp, model, seed):
+    """Arms of a (model, seed) cell that are missing/incomplete or finished over the limit (never archived)."""
+    due = []
+    for arm in ARMS.get(exp, []):
+        ep = OUT / exp / f"{model}__s{seed}__{arm}"
+        if not (ep / "results.json").exists():
+            due.append(arm)
+        elif infra_count(ep) > INFRA_LIMIT and not archived_before(exp, ep):
+            due.append(arm)
+    return due
+
+
 def launch(exp, seed, models, rerun, budget):
     global running
     if rerun:
@@ -199,7 +262,10 @@ def main():
                     return True
                 say(f"DeepSeek slow/unhealthy; {exp} s{seed} waits 5 min")
                 time.sleep(300)
-        if incomplete(exp, model, seed):
+        if exp in ARMS:
+            for arm in episodes_due(exp, model, seed):
+                launch_episode(exp, model, seed, arm, args.budget)
+        elif incomplete(exp, model, seed):
             launch(exp, seed, [model], False, args.budget)
         elif over_limit(exp, model, seed):
             launch(exp, seed, [model], True, args.budget)
