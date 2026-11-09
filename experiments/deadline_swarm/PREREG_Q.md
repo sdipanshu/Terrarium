@@ -88,3 +88,22 @@ Paired bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI. Holm corr
    - **What happened:** the queue launched glm s401 far, control and adjacent in the same second. Their 18 simultaneous first calls hit the per-user 429 cap. Within 15 s, 30 of 58 requests had been refused, and one episode already had 3 infra errors.
    - **What was done:** all three were stopped at about T+20 s, before the T+120 announcement, so no outcome existed. They were moved to `outputs/expQ/aborted_burst/` and are not analysed.
    - **Change:** the queue now waits 60 s between episode launches (`LAUNCH_GAP`). Nothing else changed, and the cells re-run from scratch.
+
+2. **2026-11-09 10:50 IST: two measurement notes from monitoring, logged before any Q analysis. The procedure is unchanged.**
+   - **Gateway cut-off.**
+     - **What happens:** a turn longer than 60 s gets HTTP 504 from the provider gateway and is retried. This usually hits the first turn after release, when the agent solves puzzle 2.
+     - **In the first 12 episodes:**
+
+       | Model | Agents affected |
+       |---|---|
+       | deepseek | 16/24 |
+       | glm | 5/36 |
+       | qwen | 5/18 |
+
+     - **Not counted as infra errors:** the retry often ends after the episode has ended. These failures never reach `infra_error`, so they are invisible to the more-than-3 re-run rule.
+     - **Effect on outcomes:** Q1 (key received, by message) and Q2 (on time, within 40 s) are unaffected. A turn still running at 60 s could not have been submitted within D = 40 s anyway. Late-score and "no submission" counts are affected.
+     - **Reporting:** the number of cut-off agents will be reported per arm.
+   - **Strict use undercounts real use.**
+     - **What happens:** agents holding their key usually submit exactly the key, but 12–46 s after release, because they check it against the examples first.
+     - **Measure kept:** the 11-s strict-use window stays as pre-registered.
+     - **Added exploratory measure:** *key submitted*, meaning P2 answer = own key, key received before submission, and submitted by release + D.
