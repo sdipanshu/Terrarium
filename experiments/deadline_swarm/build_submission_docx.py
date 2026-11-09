@@ -95,7 +95,7 @@ tp.alignment = WD_ALIGN_PARAGRAPH.CENTER
 tr = tp.add_run(TITLE)
 tr.bold = True
 tr.font.size = Pt(16)
-p("[AUTHOR NAME(S)] - [AFFILIATION(S)]", align=WD_ALIGN_PARAGRAPH.CENTER)
+p("Dipanshu Sharma - Independent Researcher", align=WD_ALIGN_PARAGRAPH.CENTER)
 p("With Apart Research", italic=True, align=WD_ALIGN_PARAGRAPH.CENTER)
 p("Research conducted at the Swarm Alignment Hackathon, November 2026.", italic=True, size=9,
   align=WD_ALIGN_PARAGRAPH.CENTER)
@@ -262,8 +262,9 @@ p("When cheating clearly pays, LLM agents cheat; a single plain-language rule ne
   "can return a reassuring null for reasons that have nothing to do with the agents.")
 
 h("Code and Data")
-p("Code, pre-registrations (PREREG_*.md), analysis scripts and per-episode logs (requests.jsonl, events.jsonl) "
-  "are on branch exp/deadline-swarm of the Terrarium repository: [REPO URL]. Info-hazard note: the circumvention "
+p("Code, pre-registrations (PREREG_*.md), offline tests, analysis scripts, analysis outputs and the prompt audit "
+  "are on branch exp/deadline-swarm: https://github.com/sdipanshu/Terrarium/tree/exp/deadline-swarm/experiments/deadline_swarm . Raw per-episode logs (requests.jsonl, "
+  "events.jsonl) are available from the author on request. Info-hazard note: the circumvention "
   "techniques described are elementary and domain-specific; no attack tooling is released.")
 
 h("References")
@@ -317,7 +318,7 @@ bullets([
 h("LLM Usage Statement")
 p("Claude (Anthropic) was used to write and test the experiment code, run and monitor the experiments, compute "
   "the pre-registered analyses, and draft this report. All reported numbers were produced by the committed "
-  "analysis scripts from logged data; the authors [CONFIRM: reviewed the claims, prompts and transcript excerpts]. "
+  "analysis scripts from logged data; the author reviewed the claims, prompts and transcript excerpts. "
   "Loophole and motive codes were produced with author-written regular expressions and have not been validated "
   "by an independent human labeller.")
 

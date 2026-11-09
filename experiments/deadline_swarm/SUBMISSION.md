@@ -1,6 +1,6 @@
 # When Do AI Agents Share Answer Keys? Incentives, Confidentiality Rules, and Peer Influence in a Six-Agent Ring
 
-**Authors:** [AUTHOR NAME(S)] — [AFFILIATION(S)]
+**Authors:** Dipanshu Sharma — Independent Researcher
 
 ## Abstract
 
@@ -178,7 +178,7 @@ The behaviour concentrates in deepseek (113 of 129 messages), with 16 from glm a
 - Motwani, S. R., et al. (2024). Secret Collusion among Generative AI Agents. arXiv:2402.07510.
 - Park, J. S., et al. (2023). Generative Agents: Interactive Simulacra of Human Behavior. arXiv:2304.03442.
 - Hammond, L., et al. (2025). Multi-Agent Risks from Advanced AI. arXiv:2502.14143.
-- Terrarium multi-agent framework (software). [repo URL]
+- Terrarium multi-agent framework (software). https://github.com/umass-aisec/Terrarium
 
 ## Appendix A: Limitations and Dual-Use / Ethical Considerations
 
@@ -224,5 +224,5 @@ The behaviour concentrates in deepseek (113 of 129 messages), with 16 from glm a
 
 ## Appendix D: Reproducibility
 
-- Code, pre-registrations (`PREREG_*.md`), analysis scripts and outputs are on branch `exp/deadline-swarm` of the Terrarium repository. [link]
-- Each episode logs every request and response (`requests.jsonl`) and every environment event (`events.jsonl`).
+- Code, pre-registrations (`PREREG_*.md`), analysis scripts and outputs are on branch `exp/deadline-swarm`: https://github.com/sdipanshu/Terrarium/tree/exp/deadline-swarm/experiments/deadline_swarm. Raw per-episode logs are available on request.
+- Each episode logs every request and response (`requests.jsonl`) and every environment event (`events.jsonl`); these raw logs are not in the repository.
