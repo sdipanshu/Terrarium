@@ -35,7 +35,9 @@ EXPS = {  # name: (batch script, seeds, arms per (model, seed))
     "expP": ("run_batch_p.py", range(301, 313), 2),
     "expQ": ("run_batch_q.py", range(401, 411), 3),
     "expR": ("run_batch_r.py", range(501, 511), 2),
+    "expM": ("run_batch_m.py", range(601, 611), 2),
 }
+EXP_MODELS = {"expM": ["glm-5.2", "deepseek-v4-flash"]}   # recipient models; default MODELS
 STOP_AT = float("inf")   # set in main(); also checked when a slot frees up (P deviation 1)
 LAUNCH_GAP = 60          # s between episode launches: 18 simultaneous first calls hit the 429 cap (Q deviation 1)
 last_launch = 0.0
@@ -108,7 +110,8 @@ def run_slot(exp, seed, models, size, rerun):
 
 ARMS = {"expN1": ["announced_tight", "announced_generous"], "expB": ["alternating", "clustered"],
         "expF": ["F_tight", "F_generous", "FM_tight"], "expP": ["P_announce", "P_control"],
-        "expQ": ["Q_far", "Q_control", "Q_adjacent"], "expR": ["R_open", "R_rule"]}
+        "expQ": ["Q_far", "Q_control", "Q_adjacent"], "expR": ["R_open", "R_rule"],
+        "expM": ["M_same", "M_cross"]}
 
 
 def run_episode(exp, model, seed, arm):
@@ -301,7 +304,7 @@ def main():
         return True
 
     for exp, seed in order:
-        for model in MODELS:
+        for model in EXP_MODELS.get(exp, MODELS):
             if not do(exp, seed, model, wait_ds=False):
                 say(f"stop time {args.stop_at} reached; no new launches")
                 wait_all()
@@ -309,7 +312,7 @@ def main():
                 return
     wait_all()
     for exp, seed in deferred + order:                         # deferred DeepSeek cells, then any re-run still due
-        for model in MODELS:
+        for model in EXP_MODELS.get(exp, MODELS):
             if not do(exp, seed, model, wait_ds=True):
                 break
     wait_all()

@@ -11,9 +11,10 @@ class LLMAgent:
     Only the first function call of a reply is executed; extras get a rejection output.
     Reasoning items are not replayed (they are logged in the request log).
     """
-    def __init__(self, name, episode, client=None):
+    def __init__(self, name, episode, client=None, model=None):
         self.name = name
         self.ep = episode
+        self.model = model or episode.cfg.model    # per-agent model for mixed rings (experiment M)
         self.client = client or AdaptionClient(log_path=episode.out / "requests.jsonl")
         self.history = []
         self.pending_call_id = None
@@ -28,7 +29,7 @@ class LLMAgent:
     async def act(self, obs, tools):
         self._append_observation(obs)
         cfg = self.ep.cfg
-        payload = {"model": cfg.model, "instructions": self.ep.system_prompt(self.name), "input": self.history,
+        payload = {"model": self.model, "instructions": self.ep.system_prompt(self.name), "input": self.history,
                    "tools": tools, "temperature": cfg.temperature, "max_output_tokens": cfg.max_output_tokens}
         t_req = self.ep.clock.now()
         data, _ = await asyncio.to_thread(self.client.create, payload, self.name)

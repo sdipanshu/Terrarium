@@ -82,3 +82,7 @@ Paired bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI. Holm corr
 1. **2026-11-09 12:00 IST, before any R episode: the queue budget is 2, not 3.**
    - **Why:** two concurrent glm Q episodes, the chattiest model, pushed the account to 43–44% HTTP 429s, and each reached 2 infra errors.
    - **Change:** only the concurrency budget is reduced. Nothing else changes, and the 15:30 stopping rule stands.
+
+2. **2026-11-09 ~13:00 IST, before any R episode: R's launch cutoff moves from 15:30 to 14:20.**
+   - **Why:** the user chose to split the remaining time with experiment M (PREREG_M.md).
+   - **Expected sample:** about 16–18 episodes, roughly 8–9 pairs, so R becomes a pilot.
