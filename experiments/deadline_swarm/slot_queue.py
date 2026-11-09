@@ -132,6 +132,7 @@ def launch_episode(exp, model, seed, arm, budget):
     """One episode per slot (glm/qwen F cells of 3 exceeded the ~50 req/min cap when launched together)."""
     global running
     root = OUT / exp
+    root.mkdir(parents=True, exist_ok=True)
     out = root / f"{model}__s{seed}__{arm}"
     while True:
         budget = current_budget(budget)
