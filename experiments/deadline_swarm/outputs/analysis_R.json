@@ -1,0 +1,528 @@
+{
+ "summary": {
+  "n_episodes": 15,
+  "R1": {
+   "n": 6,
+   "mean": 0.5277777777777778,
+   "ci": [
+    0.16666666666666666,
+    0.8611111111111112
+   ],
+   "p": 0.001,
+   "holm_p": 0.001,
+   "supported": true
+  },
+  "R2": {
+   "n": 6,
+   "mean": 0.8333333333333334,
+   "ci": [
+    0.5,
+    1.0
+   ],
+   "p": 0.0,
+   "holm_p": 0.0,
+   "supported": true
+  },
+  "descriptive": {
+   "R_open/key_use_early": {
+    "n": 9,
+    "mean": 0.5555555555555556,
+    "ci": [
+     0.2777777777777778,
+     0.8148148148148148
+    ]
+   },
+   "R_open/key_use_any": {
+    "n": 9,
+    "mean": 0.7222222222222222,
+    "ci": [
+     0.462962962962963,
+     0.9444444444444444
+    ]
+   },
+   "R_open/any_disclosure": {
+    "n": 9,
+    "mean": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ]
+   },
+   "R_open/keyholder_disclosures": {
+    "n": 9,
+    "mean": 25.22222222222222,
+    "ci": [
+     15.555555555555555,
+     34.666666666666664
+    ]
+   },
+   "R_open/h_got_key": {
+    "n": 9,
+    "mean": 0.7777777777777778,
+    "ci": [
+     0.4444444444444444,
+     1.0
+    ]
+   },
+   "R_open/p2_score": {
+    "n": 9,
+    "mean": 0.6460865740740297,
+    "ci": [
+     0.3781166666665403,
+     0.8921157407407279
+    ]
+   },
+   "R_rule/key_use_early": {
+    "n": 6,
+    "mean": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ]
+   },
+   "R_rule/key_use_any": {
+    "n": 6,
+    "mean": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ]
+   },
+   "R_rule/any_disclosure": {
+    "n": 6,
+    "mean": 0.16666666666666666,
+    "ci": [
+     0.0,
+     0.5
+    ]
+   },
+   "R_rule/keyholder_disclosures": {
+    "n": 6,
+    "mean": 0.3333333333333333,
+    "ci": [
+     0.0,
+     1.0
+    ]
+   },
+   "R_rule/h_got_key": {
+    "n": 6,
+    "mean": 0.16666666666666666,
+    "ci": [
+     0.0,
+     0.5
+    ]
+   },
+   "R_rule/p2_score": {
+    "n": 6,
+    "mean": 0.0,
+    "ci": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "cells": {
+   "deepseek-v4-flash/R_open": {
+    "key_use_early": 0.889,
+    "key_use_any": 1.0,
+    "any_disclosure": 1.0,
+    "keyholder_disclosures": 37.0,
+    "relayed_disclosures": 41.333,
+    "h_got_key": 1.0,
+    "asked_keyholder": 1.0,
+    "keys_received_share": 1.0,
+    "p2_score": 0.954,
+    "p2_submitted": 1.0,
+    "infra_errors": 0.667,
+    "n": 3
+   },
+   "deepseek-v4-flash/R_rule": {
+    "key_use_early": 0.0,
+    "key_use_any": 0.0,
+    "any_disclosure": 0.5,
+    "keyholder_disclosures": 1.0,
+    "relayed_disclosures": 1.5,
+    "h_got_key": 0.5,
+    "asked_keyholder": 1.0,
+    "keys_received_share": 0.083,
+    "p2_score": 0.0,
+    "p2_submitted": 0.167,
+    "infra_errors": 0.0,
+    "n": 2
+   },
+   "glm-5.2/R_open": {
+    "key_use_early": 0.444,
+    "key_use_any": 0.778,
+    "any_disclosure": 1.0,
+    "keyholder_disclosures": 30.667,
+    "relayed_disclosures": 31.0,
+    "h_got_key": 1.0,
+    "asked_keyholder": 1.0,
+    "keys_received_share": 1.0,
+    "p2_score": 0.6,
+    "p2_submitted": 0.778,
+    "infra_errors": 2.333,
+    "n": 3
+   },
+   "glm-5.2/R_rule": {
+    "key_use_early": 0.0,
+    "key_use_any": 0.0,
+    "any_disclosure": 0.0,
+    "keyholder_disclosures": 0.0,
+    "relayed_disclosures": 0.0,
+    "h_got_key": 0.0,
+    "asked_keyholder": 1.0,
+    "keys_received_share": 0.0,
+    "p2_score": 0.0,
+    "p2_submitted": 0.0,
+    "infra_errors": 0.0,
+    "n": 2
+   },
+   "qwen3.5-397b/R_open": {
+    "key_use_early": 0.333,
+    "key_use_any": 0.389,
+    "any_disclosure": 1.0,
+    "keyholder_disclosures": 8.0,
+    "relayed_disclosures": 8.0,
+    "h_got_key": 0.333,
+    "asked_keyholder": 1.0,
+    "keys_received_share": 0.444,
+    "p2_score": 0.384,
+    "p2_submitted": 0.611,
+    "infra_errors": 0.333,
+    "n": 3
+   },
+   "qwen3.5-397b/R_rule": {
+    "key_use_early": 0.0,
+    "key_use_any": 0.0,
+    "any_disclosure": 0.0,
+    "keyholder_disclosures": 0.0,
+    "relayed_disclosures": 0.0,
+    "h_got_key": 0.0,
+    "asked_keyholder": 1.0,
+    "keys_received_share": 0.0,
+    "p2_score": 0.0,
+    "p2_submitted": 0.333,
+    "infra_errors": 2.0,
+    "n": 2
+   }
+  }
+ },
+ "rows": [
+  {
+   "episode": "deepseek-v4-flash__s501__R_open",
+   "model": "deepseek-v4-flash",
+   "seed": 501,
+   "arm": "R_open",
+   "holder": "Dev",
+   "told": "Kai",
+   "key_use_early": 1.0,
+   "key_use_any": 1.0,
+   "any_disclosure": 1,
+   "n_disclosures": 100,
+   "keyholder_disclosures": 46,
+   "relayed_disclosures": 54,
+   "h_got_key": 1,
+   "h_used_key": 1,
+   "keys_received_share": 1.0,
+   "asked_keyholder": 1,
+   "p2_score": 1.0,
+   "p2_submitted": 1.0,
+   "infra_errors": 0
+  },
+  {
+   "episode": "deepseek-v4-flash__s501__R_rule",
+   "model": "deepseek-v4-flash",
+   "seed": 501,
+   "arm": "R_rule",
+   "holder": "Dev",
+   "told": "Kai",
+   "key_use_early": 0.0,
+   "key_use_any": 0.0,
+   "any_disclosure": 0,
+   "n_disclosures": 0,
+   "keyholder_disclosures": 0,
+   "relayed_disclosures": 0,
+   "h_got_key": 0,
+   "h_used_key": 0,
+   "keys_received_share": 0.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.0,
+   "p2_submitted": 0.16666666666666666,
+   "infra_errors": 0
+  },
+  {
+   "episode": "deepseek-v4-flash__s502__R_open",
+   "model": "deepseek-v4-flash",
+   "seed": 502,
+   "arm": "R_open",
+   "holder": "Jun",
+   "told": "Fay",
+   "key_use_early": 1.0,
+   "key_use_any": 1.0,
+   "any_disclosure": 1,
+   "n_disclosures": 76,
+   "keyholder_disclosures": 38,
+   "relayed_disclosures": 38,
+   "h_got_key": 1,
+   "h_used_key": 1,
+   "keys_received_share": 1.0,
+   "asked_keyholder": 1,
+   "p2_score": 1.0,
+   "p2_submitted": 1.0,
+   "infra_errors": 0
+  },
+  {
+   "episode": "deepseek-v4-flash__s502__R_rule",
+   "model": "deepseek-v4-flash",
+   "seed": 502,
+   "arm": "R_rule",
+   "holder": "Jun",
+   "told": "Fay",
+   "key_use_early": 0.0,
+   "key_use_any": 0.0,
+   "any_disclosure": 1,
+   "n_disclosures": 5,
+   "keyholder_disclosures": 2,
+   "relayed_disclosures": 3,
+   "h_got_key": 1,
+   "h_used_key": 0,
+   "keys_received_share": 0.16666666666666666,
+   "asked_keyholder": 1,
+   "p2_score": 0.0,
+   "p2_submitted": 0.16666666666666666,
+   "infra_errors": 0
+  },
+  {
+   "episode": "deepseek-v4-flash__s503__R_open",
+   "model": "deepseek-v4-flash",
+   "seed": 503,
+   "arm": "R_open",
+   "holder": "Kai",
+   "told": "Fay",
+   "key_use_early": 0.6666666666666666,
+   "key_use_any": 1.0,
+   "any_disclosure": 1,
+   "n_disclosures": 59,
+   "keyholder_disclosures": 27,
+   "relayed_disclosures": 32,
+   "h_got_key": 1,
+   "h_used_key": 1,
+   "keys_received_share": 1.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.8623749999998837,
+   "p2_submitted": 1.0,
+   "infra_errors": 2
+  },
+  {
+   "episode": "glm-5.2__s501__R_open",
+   "model": "glm-5.2",
+   "seed": 501,
+   "arm": "R_open",
+   "holder": "Dev",
+   "told": "Kai",
+   "key_use_early": 0.0,
+   "key_use_any": 0.5,
+   "any_disclosure": 1,
+   "n_disclosures": 62,
+   "keyholder_disclosures": 27,
+   "relayed_disclosures": 35,
+   "h_got_key": 1,
+   "h_used_key": 0,
+   "keys_received_share": 1.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.2009749999997439,
+   "p2_submitted": 0.5,
+   "infra_errors": 2
+  },
+  {
+   "episode": "glm-5.2__s501__R_rule",
+   "model": "glm-5.2",
+   "seed": 501,
+   "arm": "R_rule",
+   "holder": "Dev",
+   "told": "Kai",
+   "key_use_early": 0.0,
+   "key_use_any": 0.0,
+   "any_disclosure": 0,
+   "n_disclosures": 0,
+   "keyholder_disclosures": 0,
+   "relayed_disclosures": 0,
+   "h_got_key": 0,
+   "h_used_key": 0,
+   "keys_received_share": 0.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.0,
+   "p2_submitted": 0.0,
+   "infra_errors": 0
+  },
+  {
+   "episode": "glm-5.2__s502__R_open",
+   "model": "glm-5.2",
+   "seed": 502,
+   "arm": "R_open",
+   "holder": "Jun",
+   "told": "Fay",
+   "key_use_early": 1.0,
+   "key_use_any": 1.0,
+   "any_disclosure": 1,
+   "n_disclosures": 76,
+   "keyholder_disclosures": 41,
+   "relayed_disclosures": 35,
+   "h_got_key": 1,
+   "h_used_key": 1,
+   "keys_received_share": 1.0,
+   "asked_keyholder": 1,
+   "p2_score": 1.0,
+   "p2_submitted": 1.0,
+   "infra_errors": 3
+  },
+  {
+   "episode": "glm-5.2__s502__R_rule",
+   "model": "glm-5.2",
+   "seed": 502,
+   "arm": "R_rule",
+   "holder": "Jun",
+   "told": "Fay",
+   "key_use_early": 0.0,
+   "key_use_any": 0.0,
+   "any_disclosure": 0,
+   "n_disclosures": 0,
+   "keyholder_disclosures": 0,
+   "relayed_disclosures": 0,
+   "h_got_key": 0,
+   "h_used_key": 0,
+   "keys_received_share": 0.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.0,
+   "p2_submitted": 0.0,
+   "infra_errors": 0
+  },
+  {
+   "episode": "glm-5.2__s503__R_open",
+   "model": "glm-5.2",
+   "seed": 503,
+   "arm": "R_open",
+   "holder": "Kai",
+   "told": "Fay",
+   "key_use_early": 0.3333333333333333,
+   "key_use_any": 0.8333333333333334,
+   "any_disclosure": 1,
+   "n_disclosures": 47,
+   "keyholder_disclosures": 24,
+   "relayed_disclosures": 23,
+   "h_got_key": 1,
+   "h_used_key": 1,
+   "keys_received_share": 1.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.5991499999998875,
+   "p2_submitted": 0.8333333333333334,
+   "infra_errors": 2
+  },
+  {
+   "episode": "qwen3.5-397b__s501__R_open",
+   "model": "qwen3.5-397b",
+   "seed": 501,
+   "arm": "R_open",
+   "holder": "Dev",
+   "told": "Kai",
+   "key_use_early": 0.0,
+   "key_use_any": 0.0,
+   "any_disclosure": 1,
+   "n_disclosures": 5,
+   "keyholder_disclosures": 3,
+   "relayed_disclosures": 2,
+   "h_got_key": 0,
+   "h_used_key": 0,
+   "keys_received_share": 0.16666666666666666,
+   "asked_keyholder": 1,
+   "p2_score": 0.0,
+   "p2_submitted": 0.6666666666666666,
+   "infra_errors": 1
+  },
+  {
+   "episode": "qwen3.5-397b__s501__R_rule",
+   "model": "qwen3.5-397b",
+   "seed": 501,
+   "arm": "R_rule",
+   "holder": "Dev",
+   "told": "Kai",
+   "key_use_early": 0.0,
+   "key_use_any": 0.0,
+   "any_disclosure": 0,
+   "n_disclosures": 0,
+   "keyholder_disclosures": 0,
+   "relayed_disclosures": 0,
+   "h_got_key": 0,
+   "h_used_key": 0,
+   "keys_received_share": 0.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.0,
+   "p2_submitted": 0.3333333333333333,
+   "infra_errors": 1
+  },
+  {
+   "episode": "qwen3.5-397b__s502__R_open",
+   "model": "qwen3.5-397b",
+   "seed": 502,
+   "arm": "R_open",
+   "holder": "Jun",
+   "told": "Fay",
+   "key_use_early": 0.16666666666666666,
+   "key_use_any": 0.16666666666666666,
+   "any_disclosure": 1,
+   "n_disclosures": 4,
+   "keyholder_disclosures": 2,
+   "relayed_disclosures": 2,
+   "h_got_key": 0,
+   "h_used_key": 0,
+   "keys_received_share": 0.16666666666666666,
+   "asked_keyholder": 1,
+   "p2_score": 0.16666666666666666,
+   "p2_submitted": 0.16666666666666666,
+   "infra_errors": 0
+  },
+  {
+   "episode": "qwen3.5-397b__s502__R_rule",
+   "model": "qwen3.5-397b",
+   "seed": 502,
+   "arm": "R_rule",
+   "holder": "Jun",
+   "told": "Fay",
+   "key_use_early": 0.0,
+   "key_use_any": 0.0,
+   "any_disclosure": 0,
+   "n_disclosures": 0,
+   "keyholder_disclosures": 0,
+   "relayed_disclosures": 0,
+   "h_got_key": 0,
+   "h_used_key": 0,
+   "keys_received_share": 0.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.0,
+   "p2_submitted": 0.3333333333333333,
+   "infra_errors": 3
+  },
+  {
+   "episode": "qwen3.5-397b__s503__R_open",
+   "model": "qwen3.5-397b",
+   "seed": 503,
+   "arm": "R_open",
+   "holder": "Kai",
+   "told": "Fay",
+   "key_use_early": 0.8333333333333334,
+   "key_use_any": 1.0,
+   "any_disclosure": 1,
+   "n_disclosures": 39,
+   "keyholder_disclosures": 19,
+   "relayed_disclosures": 20,
+   "h_got_key": 1,
+   "h_used_key": 1,
+   "keys_received_share": 1.0,
+   "asked_keyholder": 1,
+   "p2_score": 0.9856125000000854,
+   "p2_submitted": 1.0,
+   "infra_errors": 0
+  }
+ ]
+}
