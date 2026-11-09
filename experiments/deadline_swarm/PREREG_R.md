@@ -78,3 +78,7 @@ Paired bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI. Holm corr
 - Floor rule: if no episode has a disclosure, R2 is "not supported (floor)", with a one-sided 95% upper bound.
 
 ## Deviations
+
+1. **2026-11-09 12:00 IST, before any R episode: the queue budget is 2, not 3.**
+   - **Why:** two concurrent glm Q episodes, the chattiest model, pushed the account to 43–44% HTTP 429s, and each reached 2 infra errors.
+   - **Change:** only the concurrency budget is reduced. Nothing else changes, and the 15:30 stopping rule stands.
