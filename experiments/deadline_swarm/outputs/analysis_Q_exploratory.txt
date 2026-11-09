@@ -1,0 +1,19 @@
+key_submitted (exploratory, dev. 2): Q_far - Q_control +0.089 [+0.000, +0.189] n=18
+key_submitted (exploratory, dev. 2): Q_adjacent - Q_control +0.056 [-0.067, +0.200] n=18
+  Q_far: key_submitted share 0.211; median submit time with key 27.5s (n=19)
+  Q_adjacent: key_submitted share 0.178; median submit time with key 20.89000000001397s (n=16)
+  Q_control: key_submitted share 0.122; median submit time with key 23.39000000001397s (n=11)
+
+Gateway 504 cut-offs on post-release turns (agents affected / agents):
+  Q_adjacent: 22/108
+  Q_control: 30/108
+  Q_far: 33/108
+  ('deepseek', 'Q_adjacent'): 12/36
+  ('deepseek', 'Q_control'): 21/36
+  ('deepseek', 'Q_far'): 20/36
+  ('glm-5.2', 'Q_adjacent'): 2/36
+  ('glm-5.2', 'Q_control'): 4/36
+  ('glm-5.2', 'Q_far'): 9/36
+  ('qwen3.5-', 'Q_adjacent'): 8/36
+  ('qwen3.5-', 'Q_control'): 5/36
+  ('qwen3.5-', 'Q_far'): 4/36
