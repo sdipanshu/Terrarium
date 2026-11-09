@@ -33,7 +33,9 @@ EXPS = {  # name: (batch script, seeds, arms per (model, seed))
     "expB": ("run_batch_b.py", range(101, 125), 2),
     "expF": ("run_batch_f.py", range(201, 225), 3),
     "expP": ("run_batch_p.py", range(301, 313), 2),
+    "expQ": ("run_batch_q.py", range(401, 411), 3),
 }
+STOP_AT = float("inf")   # set in main(); also checked when a slot frees up (P deviation 1)
 INFRA_LIMIT = 3
 _lock = threading.Lock()
 running = 0
@@ -102,7 +104,8 @@ def run_slot(exp, seed, models, size, rerun):
 
 
 ARMS = {"expN1": ["announced_tight", "announced_generous"], "expB": ["alternating", "clustered"],
-        "expF": ["F_tight", "F_generous", "FM_tight"], "expP": ["P_announce", "P_control"]}
+        "expF": ["F_tight", "F_generous", "FM_tight"], "expP": ["P_announce", "P_control"],
+        "expQ": ["Q_far", "Q_control", "Q_adjacent"]}
 
 
 def run_episode(exp, model, seed, arm):
@@ -136,6 +139,11 @@ def launch_episode(exp, model, seed, arm, budget):
                 running += 1
                 break
         time.sleep(10)
+    if time.time() > STOP_AT:
+        with _lock:
+            running -= 1
+        say(f"stop time reached while waiting for a slot; {exp}/{out.name} not launched")
+        return
     if out.exists() and not (out / "results.json").exists():          # incomplete: archive, as the batch scripts do
         dest = root / "failed_infra" / f"{out.name}__{int(time.time())}"
         dest.parent.mkdir(exist_ok=True)
@@ -255,6 +263,8 @@ def main():
     stop_at = time.mktime(time.strptime(time.strftime("%Y-%m-%d ") + args.stop_at, "%Y-%m-%d %H:%M"))
     if stop_at < time.time():
         stop_at += 86400
+    global STOP_AT
+    STOP_AT = stop_at
     # F and B seeds alternating, low seeds first, so whatever finishes by the cutoff is balanced across
     # models; each (model, seed) cell is its own slot, re-run right after its seed. A/N1 leftovers last
     # (N1 has all 24 seeds; its remaining work is DeepSeek re-runs and DeepSeek s24).

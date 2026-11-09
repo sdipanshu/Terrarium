@@ -25,6 +25,7 @@ def p_measures(ep_dir):
     info = json.loads((ep_dir / "keys.json").read_text())
     names, keys, H, M = gt["names"], info["keys"], info["holder"], info["told"]
     release, due = cfg["prep_seconds"], cfg["prep_seconds"] + cfg["deadline"]
+    since = info.get("announce_at", release)     # Q: pointer/requests count from the prep announcement
     sends = sorted((e for e in ev if e["action"] == "send"), key=lambda e: e["t"])
     deliver = {e["msg_id"]: e["t"] for e in ev if e["action"] == "deliver"}
     p2 = {e["actor"]: e for e in ev if e["action"] == "submit" and e["puzzle"] == "P2"}
@@ -41,13 +42,13 @@ def p_measures(ep_dir):
     strict = [o for o in others if o in p2 and p2[o]["answer"] == keys[o] and o in got_key
               and got_key[o] <= p2[o]["t"] and p2[o]["t"] - max(got_key[o], release) <= STRICT_WINDOW]
 
-    pointer = [s for s in sends if s["actor"] != H and s["t"] >= release and pointer_re.search(s.get("text", ""))]
+    pointer = [s for s in sends if s["actor"] != H and s["t"] >= since and pointer_re.search(s.get("text", ""))]
     reached = {s["recipient"]: deliver[s["msg_id"]] for s in reversed(pointer)
                if s["msg_id"] in deliver and deliver[s["msg_id"]] <= due}
     spread = sorted(n for n in reached if n not in (M, H))
     m_fwd = [s for s in pointer if s["actor"] == M]
     h_sends = [s for s, o in disclosures if s["actor"] == H]
-    to_h = [deliver[s["msg_id"]] for s in sends if s["recipient"] == H and s["t"] >= release and s["msg_id"] in deliver
+    to_h = [deliver[s["msg_id"]] for s in sends if s["recipient"] == H and s["t"] >= since and s["msg_id"] in deliver
             and re.search(KEYWORDS, s.get("text", ""), re.I)]
     on = sum(res[n]["p2_on_time"] for n in others) / len(others)
     rel = lambda t: None if t is None else round(t - release, 1)
@@ -67,6 +68,8 @@ def p_measures(ep_dir):
             "key_received_s": {o: rel(t) for o, t in got_key.items()},
             "key_received_by_hop_from_H": {ring_dist(names, H, o): rel(t) for o, t in got_key.items()},
             "p2_on_time_others": on,
+            "h_asked": int(any(t <= due for t in to_h)),
+            "m_key_received": int(got_key.get(M, 1e9) <= due),
             "infra_errors": sum(e["action"] == "infra_error" for e in ev)}
 
 

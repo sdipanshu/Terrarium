@@ -1,0 +1,17 @@
+B1 tight on-time, alternating - clustered: -0.203 [-0.362, -0.058] n=23  p=0.9965 holm=0.9965
+B2 share initiated by tight: 0.304 [0.083, 0.560] n=23 p=0.1440 holm=0.2880
+   alternating: 0.250 [0.000, 0.500] n=12
+   clustered: 0.364 [0.091, 0.636] n=11
+
+Exploratory (paired alternating - clustered):
+  generous_on_time: -0.101 [-0.217, +0.014] n=23
+  tight_p2_score: -0.117 [-0.249, +0.011] n=23
+  generous_p2_score: -0.033 [-0.129, +0.058] n=23
+  tight_helped_in_time: -0.014 [-0.043, +0.000] n=23
+  useful_msgs: +0.870 [+0.130, +1.783] n=23
+  first exchange kinds: {'alternating/request': 4, 'alternating/volunteer': 8, 'clustered/request': 5, 'clustered/volunteer': 6}
+
+Per model:
+  deepseek-v4-flash: B1 -0.133 [-0.400, +0.000] n=5;  B2 0.000 n=4
+  glm-5.2: B1 -0.185 [-0.444, +0.037] n=9;  B2 0.462 n=13
+  qwen3.5-397b: B1 -0.259 [-0.556, +0.037] n=9;  B2 0.167 n=6
