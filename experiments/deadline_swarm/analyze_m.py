@@ -68,8 +68,15 @@ def main():
                      "supported": r["ci"][0] > 0 or r["ci"][1] < 0}
         print(f"{name}: same - cross {r['mean']:+.3f} [{r['ci'][0]:+.3f}, {r['ci'][1]:+.3f}] n={r['n']} "
               f"p(two-sided)={p:.4f} holm={adj:.4f} CI excludes 0={out[name]['supported']}")
+    print("\nExploratory vs no-instigator baseline (deviation 2), paired by (recipient model, seed):")
+    for a in ("M_same", "M_cross"):
+        for key in ("breaker_share", "any_recipient_break", "key_use_share"):
+            r = paired_diff(rows, a, "M_none", key)
+            if r:
+                out.setdefault("vs_baseline", {})[f"{a}-M_none/{key}"] = {k: r[k] for k in ("n", "mean", "ci")}
+                print(f"  {a} - M_none {key}: {r['mean']:+.3f} [{r['ci'][0]:+.3f}, {r['ci'][1]:+.3f}] n={r['n']}")
     print("\nDescriptive (episode bootstrap, 95% CI):")
-    for arm in ("M_same", "M_cross"):
+    for arm in ("M_same", "M_cross", "M_none"):
         rs = [r for r in rows if r["arm"] == arm]
         for key in ("breaker_share", "any_recipient_break", "instigator_broke", "key_use_share", "laundered_share", "keys_received_share"):
             if rs:
@@ -77,7 +84,7 @@ def main():
                 out.setdefault("descriptive", {})[f"{arm}/{key}"] = {"n": len(rs), "mean": m, "ci": ci}
                 print(f"  {arm:7s} {key:20s} {m:.3f} [{ci[0]:.3f}, {ci[1]:.3f}] n={len(rs)}")
     print("\nRecipient rule-breaking by hop from instigator (pooled):")
-    for arm in ("M_same", "M_cross"):
+    for arm in ("M_same", "M_cross", "M_none"):
         agg = defaultdict(lambda: [0, 0])
         for r in rows:
             if r["arm"] == arm:
