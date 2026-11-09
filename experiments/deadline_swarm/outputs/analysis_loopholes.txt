@@ -1,0 +1,25 @@
+Loophole messages (yes/no verification or rule-from-key schemes) in rule conditions F, R_rule, M: 198 messages in 23 episodes; 146 with same-turn reasoning text.
+Theme frequency in same-turn reasoning (keyword coding by Claude, not validated by a human):
+  own_answer_needed      114/146 (78%)
+  exchange_framing       112/146 (77%)
+  helping_others           9/146 (6%)
+  explicit_score           5/146 (3%)
+  designer_intent         53/146 (36%)
+  task_impossible         17/146 (12%)
+  rule_scope_parsing      78/146 (53%)
+  equivalence_admitted     9/146 (6%)
+  spirit_concern          50/146 (34%)
+
+Messages declining to verify/confirm (refusing the oracle): 7
+By experiment/model (messages with reasoning): {('expF', 'deep'): 20, ('expF', 'glm-'): 2, ('expM', 'deep'): 103, ('expM', 'glm-'): 21}
+
+Excluding M's instructed instigators: 129 messages
+  own_answer_needed       99/129 (77%)
+  exchange_framing        98/129 (76%)
+  helping_others           6/129 (5%)
+  explicit_score           3/129 (2%)
+  designer_intent         49/129 (38%)
+  rule_scope_parsing      67/129 (52%)
+  spirit_concern          43/129 (33%)
+  equivalence_admitted     7/129 (5%)
+  by model: {'deep': 113, 'glm-': 16} episodes: 19
