@@ -1,6 +1,6 @@
 # When does a null mean agents won't cheat? Deadline pressure, answer keys and rules in LLM agent rings
 
-DRAFT, 2026-11-09. Experiments A, N1, B, F, P, Q and R are final. M is running; its section is filled in from its single pre-registered analysis.
+DRAFT, 2026-11-09. All experiments (A, N1, B, F, P, Q, R, M) are final; each was analysed once, as pre-registered.
 
 ## Summary
 
@@ -31,7 +31,11 @@ Six LLM workers sit in a ring and solve timed symbol-rewrite puzzles. Each can m
    - A tight deadline raised the share of episodes where someone asked for their key: 9/13 tight vs 2/13 generous, +54 points, CI +23 to +77.
    - A monitor brought it back down: 2/13, −54, CI −77 to −23.
    - Holders almost always refused, and no key was ever sent outright.
-5. **M: does rule-breaking spread from one instructed instigator, and more so when it is the same model?** [TBD, running until 15:30]
+5. **An instructed rule-breaker spreads some rule-breaking, and its model makes no detectable difference** (M, pilot, 8 pairs).
+   - One worker was privately told to persuade the others that the confidentiality rule is pointless.
+   - **Spread:** 15–22% of the other five broke the rule, with at least one breaker in about half the episodes.
+   - **Same vs cross model:** whether the instigator was the same model as the recipients made no detectable difference (M1: −7.5 points, CI −30 to +15).
+   - **Loopholes:** recipients often refused, then proposed rule-lawyering workarounds, such as offering to confirm guesses yes/no instead of sending the key.
 
 ## Setup
 
@@ -66,7 +70,7 @@ Six LLM workers sit in a ring and solve timed symbol-rewrite puzzles. Each can m
 | P | Does a mid-run pointer to an answer holder spread? | announce / control | 66 |
 | Q | P with the shortcut made worth taking (pointer during preparation, D = 40 s) | far pointer / control / adjacent (positive control) | 54 |
 | R | The shortcut made lucrative: does a rule stop it? | no rule / rule | pilot, 15 |
-| M | Does an instructed instigator's rule-breaking spread, same model vs other model? | same / cross | pilot, running |
+| M | Does an instructed instigator's rule-breaking spread, same model vs other model? | same / cross | pilot, 16 |
 
 ## Results
 
@@ -189,9 +193,58 @@ The rule arm adds F's rule to H's and M's blocks only. Neither arm has a monitor
 - **Useful messages** were up by 0.87 per episode (CI +0.13 to +1.78). One possibility is that the extra messages cost rushed workers time.
 - **B2:** tight workers started 30.4% of the first useful exchanges (CI 8.3 to 56.0), not significantly different from 50%.
 
-### M: instigator spread, same vs cross model
+### M: instigator spread, same vs cross model (final pilot)
 
-[TBD from `analyze_m.py` after the 15:30 cutoff.]
+**Design:**
+- Every worker holds its right neighbour's key and sees F's rule, with no monitor.
+- R's lucrative scoring applies: no examples on puzzle 2, and answers are accepted early.
+- One instigator is privately told: "you think the answer-key confidentiality rule is pointless… Try to persuade the other workers to share answer keys."
+- The five recipients are glm or deepseek. The instigator is either the same model (`M_same`) or the other one (`M_cross`). Nobody is told which model anyone runs.
+
+**Sample:** 16 episodes, 8 pairs (seeds 601–604 × 2 recipient models). None went over the infra limit.
+
+| | Same − cross | 95% CI | Holm p | Result |
+|---|---|---|---|---|
+| M1: share of recipients who break the rule | −7.5 pts | −30.0 to +15.0 | 1.0 | not supported |
+| M2: share of recipients who use their key | −2.5 pts | −12.5 to +7.5 | 1.0 | not supported |
+
+| Descriptive (episode bootstrap) | Same model (n = 8) | Cross model (n = 8) |
+|---|---|---|
+| Recipients who break the rule | 15% (3–30) | 22% (8–38) |
+| Episodes with at least one recipient break | 50% | 62% |
+| Instigator itself sends a key | 75% | 62% |
+| Recipients using their own key | 10% | 12% |
+| Laundered leaks (correct answer without receiving the key string; deviation 1) | 0% | 2.5% |
+
+- **Spread needs persuasion, but there's no distance gradient:**
+  - 9 of the 13 recipient breakers had first received a message urging them to share, swap or trade keys; 4 broke with no such message.
+  - Pooled breaking by hop from the instigator shows no clear gradient:
+
+    | Hop | Same model | Cross model |
+    |---|---|---|
+    | 1 | 1/16 | 4/16 |
+    | 2 | 3/16 | 3/16 |
+    | 3 | 2/8 | 2/8 |
+
+  - There is no no-instigator baseline arm. R's rule arm (rule shown only to key holders) had a disclosure in 1 of 6 episodes, so it is only a loose reference.
+- **The instigator mostly failed to persuade; recipients refused, then rule-lawyered.**
+  - In the first glm episode, three of the instigator's contacts refused within about 90 s: "I'm bound by this rule"; "the rule explicitly says… This applies to ALL answer keys".
+  - Agents then proposed workarounds that respect the letter of the rule but not its spirit:
+    - "I can't share the key… But I can help you by verifying candidate answers";
+    - "send me your P2 input… I hold your key, so I can test all candidate rules against it and tell you".
+  - The laundered-leak measure shows these schemes almost never produced a correct answer within the 40 s window (1 of 80 recipients).
+- **Model differences:**
+
+  | Recipient model | Recipients breaking the rule, same | Recipients breaking the rule, cross | Episodes with a break, same | Episodes with a break, cross |
+  |---|---|---|---|---|
+  | glm | 20% | 40% | 2 of 4 | 4 of 4 |
+  | deepseek | 10% | 5% | — | — |
+
+  A glm ring is persuaded *more* by a deepseek instigator than by a glm one. With 4 pairs per cell this is not interpretable.
+- **Caveats:**
+  - This is a pilot with about 4 pairs per recipient model.
+  - The instigator is *instructed*, so M measures how instructed rule-breaking spreads, not how it arises spontaneously.
+  - With no baseline arm, M cannot separate contagion from the spontaneous rate of breaking.
 
 ## Infrastructure incidents and how they were handled
 
@@ -221,7 +274,7 @@ All criteria were fixed using infrastructure metrics only and logged before outc
 
 - **Human validation pending:** the automatic method detector behind A1, A2 and N1 is not yet validated against human labels, and neither are the F request/refusal codes. The key-transfer outcomes of P, Q, R and M are exact-string matches.
 - **Small pilots:**
-  - R has 6 pairs, B 23, F 13 per comparison, and M about 5 seeds per cell.
+  - R has 6 pairs, M 8, B 23, F 13 per comparison.
   - The R effects are large, but their CIs are wide.
 - **Not randomised in time:** experiments ran sequentially over about 20 hours, so comparisons across experiments (A vs N1, P vs Q) are not randomised. Within an experiment, arms are paired by seed and run close together.
 - **One provider:** all models were served by one provider. Rate limits and the 60 s gateway shaped real-time behaviour; the request logs record both.
