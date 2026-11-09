@@ -36,6 +36,8 @@ EXPS = {  # name: (batch script, seeds, arms per (model, seed))
     "expQ": ("run_batch_q.py", range(401, 411), 3),
 }
 STOP_AT = float("inf")   # set in main(); also checked when a slot frees up (P deviation 1)
+LAUNCH_GAP = 60          # s between episode launches: 18 simultaneous first calls hit the 429 cap (Q deviation 1)
+last_launch = 0.0
 INFRA_LIMIT = 3
 _lock = threading.Lock()
 running = 0
@@ -139,6 +141,9 @@ def launch_episode(exp, model, seed, arm, budget):
                 running += 1
                 break
         time.sleep(10)
+    global last_launch
+    time.sleep(max(0.0, last_launch + LAUNCH_GAP - time.time()))
+    last_launch = time.time()
     if time.time() > STOP_AT:
         with _lock:
             running -= 1

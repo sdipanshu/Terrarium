@@ -1,6 +1,6 @@
 # Pre-registration Q (P′): does a pointer to the answer holder propagate when the shortcut is worth taking?
 
-Status: FROZEN 2026-11-09 ~10:15 IST, before any Q episode. The user approved the run ("okay run it") after the P diagnosis below. P results were known when this was written; no Q data existed.
+Status: FROZEN 2026-11-09 ~09:55 IST, before any Q episode. The user approved the run ("okay run it") after the P diagnosis below. P results were known when this was written; no Q data existed.
 
 ## Why P could not answer its question (diagnosis from P transcripts, 66 episodes)
 
@@ -83,3 +83,8 @@ Paired bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI. Holm corr
 - If no episode in any arm has a disclosure, the floor rule from PREREG_P applies.
 
 ## Deviations
+
+1. **2026-11-09 10:00 IST: the first launch was aborted for a rate-limit burst.**
+   - **What happened:** the queue launched glm s401 far, control and adjacent in the same second. Their 18 simultaneous first calls hit the per-user 429 cap. Within 15 s, 30 of 58 requests had been refused, and one episode already had 3 infra errors.
+   - **What was done:** all three were stopped at about T+20 s, before the T+120 announcement, so no outcome existed. They were moved to `outputs/expQ/aborted_burst/` and are not analysed.
+   - **Change:** the queue now waits 60 s between episode launches (`LAUNCH_GAP`). Nothing else changed, and the cells re-run from scratch.
