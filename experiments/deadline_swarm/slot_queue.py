@@ -35,7 +35,7 @@ EXPS = {  # name: (batch script, seeds, arms per (model, seed))
     "expP": ("run_batch_p.py", range(301, 313), 2),
     "expQ": ("run_batch_q.py", range(401, 411), 3),
     "expR": ("run_batch_r.py", range(501, 511), 2),
-    "expM": ("run_batch_m.py", range(601, 611), 2),
+    "expM": ("run_batch_m.py", range(601, 605), 3),   # 605+ never run; M_none baseline added for 601-604
 }
 EXP_MODELS = {"expM": ["glm-5.2", "deepseek-v4-flash"]}   # recipient models; default MODELS
 ARM_MAJOR = {"expR", "expM"}
@@ -112,7 +112,7 @@ def run_slot(exp, seed, models, size, rerun):
 ARMS = {"expN1": ["announced_tight", "announced_generous"], "expB": ["alternating", "clustered"],
         "expF": ["F_tight", "F_generous", "FM_tight"], "expP": ["P_announce", "P_control"],
         "expQ": ["Q_far", "Q_control", "Q_adjacent"], "expR": ["R_open", "R_rule"],
-        "expM": ["M_same", "M_cross"]}
+        "expM": ["M_same", "M_cross", "M_none"]}
 
 
 def run_episode(exp, model, seed, arm):

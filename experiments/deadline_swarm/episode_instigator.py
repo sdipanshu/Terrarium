@@ -28,16 +28,17 @@ class InstigatorEpisode(LucrativeRules, KeyEpisode):
         super().__init__(cfg, out_dir, agent_factory, clock)
         self.announce_at = float(cfg.extra.get("announce_at", 120))
         self.instigator = instigator_of(self.names, cfg.seed)
+        self.no_instigator = bool(cfg.extra.get("no_instigator"))   # M_none baseline: an ordinary worker in the seat
 
     def model_of(self, agent):
         """Agents are built inside Episode.__init__, so this works from names and cfg only."""
-        if agent == instigator_of(self.names, self.cfg.seed):
+        if agent == instigator_of(self.names, self.cfg.seed) and not self.cfg.extra.get("no_instigator"):
             return self.cfg.extra.get("instigator_model") or self.cfg.model
         return self.cfg.model
 
     def system_prompt(self, agent):
         text = super().system_prompt(agent)
-        return text + "\n\n" + STANCE if agent == self.instigator else text
+        return text + "\n\n" + STANCE if agent == self.instigator and not self.no_instigator else text
 
     def first_observation(self, agent):
         owner = self.holds[agent]
@@ -49,6 +50,7 @@ class InstigatorEpisode(LucrativeRules, KeyEpisode):
     def write_manifest(self):
         super().write_manifest()
         info = json.loads((self.out / "keys.json").read_text())
-        info |= {"instigator": instigator_of(self.names, self.cfg.seed), "announce_at": self.announce_at,
+        info |= {"instigator": instigator_of(self.names, self.cfg.seed), "no_instigator": self.no_instigator,
+                 "announce_at": self.announce_at,
                  "models": {a: self.model_of(a) for a in self.names}}
         (self.out / "keys.json").write_text(json.dumps(info, indent=1))

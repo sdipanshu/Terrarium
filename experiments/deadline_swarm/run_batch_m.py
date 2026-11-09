@@ -15,9 +15,9 @@ from pathlib import Path
 HERE = Path(__file__).parent
 MODELS = ["glm-5.2", "deepseek-v4-flash"]        # recipient models; qwen never communicates (P, Q)
 OTHER = {"glm-5.2": "deepseek-v4-flash", "deepseek-v4-flash": "glm-5.2"}
-LAYOUTS = ["M_same", "M_cross"]
+LAYOUTS = ["M_same", "M_cross", "M_none"]
 PREP = 360
-DEADLINE = {"M_same": 40, "M_cross": 40}
+DEADLINE = {"M_same": 40, "M_cross": 40, "M_none": 40}
 ANNOUNCE_AT = 120
 
 
@@ -28,7 +28,8 @@ def one(model, seed, layout, out):
     from episode_lucrative import RConfig
     cfg = RConfig(seed=seed, arm=layout, deadline=DEADLINE[layout], prep_seconds=PREP, model=model,
                   extra={"prompt": "nohint", "announce_at": ANNOUNCE_AT, "monitor": False,
-                         "instigator_model": model if layout == "M_same" else OTHER[model]})
+                         "instigator_model": OTHER[model] if layout == "M_cross" else model,
+                         "no_instigator": layout == "M_none"})
     res = asyncio.run(InstigatorEpisode(cfg, out, lambda n, ep: LLMAgent(n, ep, model=ep.model_of(n))).run())
     print(json.dumps({k: round(v["p2_score"], 2) for k, v in res.items()}))
 

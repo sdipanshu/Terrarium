@@ -92,3 +92,9 @@ Paired bootstrap over (recipient model, seed): 10,000 resamples, seed 0, 95% CI.
      - Puzzle 2 has no examples, so a correct answer without key-derived help has a chance of about 1%.
    - **Reporting:** the measure is exploratory and reported per arm. Seeing the live messages is disclosed here.
    - **No change** to M1, M2 or the procedure.
+
+2. **2026-11-09 ~16:10 IST: a no-instigator baseline arm added after M's results were known. It is exploratory, not confirmatory.**
+   - **Arm:** `M_none` keeps the same seeds (601–604), recipient models and seat as M. The seat holds an ordinary worker of the recipient model, with no stance line.
+   - **Why it was added:** an outside review pointed out that M cannot separate instigator influence from the spontaneous rate of breaking without it.
+   - **Comparisons:** `M_same` vs `M_none` and `M_cross` vs `M_none` on recipient breaking and key use. They are paired by (recipient model, seed), reported with CIs, and labelled exploratory.
+   - **Stopping rule:** no M_none episode launches after 16:40 IST.

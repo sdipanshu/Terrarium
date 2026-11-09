@@ -54,6 +54,13 @@ class Instigator(unittest.TestCase):
         same = InstigatorEpisode(cfg("M_same", inst="glm-5.2"), tempfile.mkdtemp(),
                                  lambda n, e: LLMAgent(n, e, client=object(), model=e.model_of(n)), clock=FakeClock())
         self.assertEqual({a.model for a in same.agents.values()}, {"glm-5.2"})
+        c = cfg("M_none", inst="glm-5.2")
+        c.extra["no_instigator"] = True
+        none = InstigatorEpisode(c, tempfile.mkdtemp(), lambda n, e: LLMAgent(n, e, client=object(),
+                                                                            model=e.model_of(n)), clock=FakeClock())
+        self.assertEqual({a.model for a in none.agents.values()}, {"glm-5.2"})
+        self.assertFalse(any(STANCE in none.system_prompt(n) for n in none.names))
+        self.assertEqual(none.instigator, none.names[I])                          # same seat, ordinary worker
 
     def test_spread_measures(self):
         def scripts(i, ep):   # instigator's neighbour (hop 1) sends its held key to its owner; then the owner uses it
