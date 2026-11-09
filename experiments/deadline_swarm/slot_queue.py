@@ -38,6 +38,7 @@ EXPS = {  # name: (batch script, seeds, arms per (model, seed))
     "expM": ("run_batch_m.py", range(601, 611), 2),
 }
 EXP_MODELS = {"expM": ["glm-5.2", "deepseek-v4-flash"]}   # recipient models; default MODELS
+ARM_MAJOR = {"expR", "expM"}
 STOP_AT = float("inf")   # set in main(); also checked when a slot frees up (P deviation 1)
 LAUNCH_GAP = 60          # s between episode launches: 18 simultaneous first calls hit the 429 cap (Q deviation 1)
 last_launch = 0.0
@@ -284,7 +285,7 @@ def main():
         order = [(args.only, s) for s in EXPS[args.only][1]]
     deferred = []
 
-    def do(exp, seed, model, wait_ds):
+    def do(exp, seed, model, wait_ds, only_arm=None):
         if time.time() > stop_at:
             return False
         if model == DS and (incomplete(exp, model, seed) or over_limit(exp, model, seed)):
@@ -297,7 +298,8 @@ def main():
                 time.sleep(300)
         if exp in ARMS:
             for arm in episodes_due(exp, model, seed):
-                launch_episode(exp, model, seed, arm, args.budget)
+                if only_arm in (None, arm):
+                    launch_episode(exp, model, seed, arm, args.budget)
         elif incomplete(exp, model, seed):
             launch(exp, seed, [model], False, args.budget)
         elif over_limit(exp, model, seed):
@@ -305,8 +307,10 @@ def main():
         return True
 
     for exp, seed in order:
-        for model in EXP_MODELS.get(exp, MODELS):
-            if not do(exp, seed, model, wait_ds=False):
+        # arm-major within a seed for R/M, so two episodes of the same (chatty) model rarely run together
+        for arm, model in ((a, m) for a in (ARMS[exp] if exp in ARM_MAJOR else [None])
+                           for m in EXP_MODELS.get(exp, MODELS)):
+            if not do(exp, seed, model, wait_ds=False, only_arm=arm):
                 say(f"stop time {args.stop_at} reached; no new launches")
                 wait_all()
                 say("ALL DONE (time cutoff)")

@@ -86,3 +86,11 @@ Paired bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI. Holm corr
 2. **2026-11-09 ~13:00 IST, before any R episode: R's launch cutoff moves from 15:30 to 14:20.**
    - **Why:** the user chose to split the remaining time with experiment M (PREREG_M.md).
    - **Expected sample:** about 16–18 episodes, roughly 8–9 pairs, so R becomes a pilot.
+
+3. **2026-11-09 13:20 IST: launch order and two queue restarts. Two glm episodes running, no R outcome yet.**
+   - **Launch order:** within each seed the queue now launches arm-major: open for glm, deepseek and qwen, then rule for the same three. The pre-registration said each model's two arms back to back.
+     - **Why:** two glm R episodes running together, at about 22 requests/min each, hit the account's 429 cap. One had 2 infra errors within 5 minutes.
+     - **What it changes:** only which episodes overlap in time. If the cutoff falls mid-seed, the last seed can end with an unpaired open arm; unpaired cells are excluded from paired tests, as pre-registered.
+   - **Restarts:** the R queue was restarted twice, at 13:14 and 13:20.
+     - The first was after a crash on the missing output folder; no episode had run.
+     - The second was for this ordering change; the running episodes continued.
