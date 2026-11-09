@@ -1,4 +1,4 @@
-# "I Can't Send You the Key, But…": LLM Agents Keep the Letter of a Rule and Lawyer Around Its Spirit
+# Obey the Letter, Dodge the Spirit: LLM Agents and a Cheating Ban
 
 **Authors:** [AUTHOR NAME(S)] — [AFFILIATION(S)]
 

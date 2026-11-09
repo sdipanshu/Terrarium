@@ -1,4 +1,4 @@
-# "I Can't Send You the Key, But…": LLM Agents Keep the Letter of a Rule and Lawyer Around Its Spirit
+# Obey the Letter, Dodge the Spirit: LLM Agents and a Cheating Ban
 
 DRAFT, 2026-11-09. All experiments (A, N1, B, F, P, Q, R, M) are final; each was analysed once, as pre-registered.
 
