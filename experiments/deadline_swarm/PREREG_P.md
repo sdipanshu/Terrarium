@@ -84,3 +84,8 @@ Pointer-message and disclosure positives go into the morning labelling sheet: al
 ## Deviations
 
 (none yet)
+
+1. **2026-11-09 08:10 IST: one episode was launched after the cutoff, then stopped and excluded.**
+   - **What happened:** the queue checked the cutoff before taking a slot. The (glm-5.2, seed 312) cell was picked up just before 08:00, waited for a free slot, and launched `P_announce` at 08:04, after the 08:00 stopping time.
+   - **What was done:** that episode was stopped at 08:10 and moved to `outputs/expP_postcutoff/`, and is not analysed. No other episode launched after 08:00. qwen3.5-397b seed 311 `P_control`, launched at 07:58, finishes and counts.
+   - **Analysed sample:** every (model, seed) pair whose two arms finished.
