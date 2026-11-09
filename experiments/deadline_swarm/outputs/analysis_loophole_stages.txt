@@ -1,0 +1,5 @@
+Loophole stages by condition (episodes; recovered = answers). Non-instigator workers only. Regex coding by Claude.
+  expF     n=39 proposed: 6; used (verdict given on a candidate): 2; episodes with >=1 recovered answer: 39; recovered answers (correct, key string never received first): 151
+  expR     n= 6 proposed: 1; used (verdict given on a candidate): 0; episodes with >=1 recovered answer: 0; recovered answers (correct, key string never received first): 0
+  M_same   n= 8 proposed: 8; used (verdict given on a candidate): 3; episodes with >=1 recovered answer: 0; recovered answers (correct, key string never received first): 0
+  M_cross  n= 8 proposed: 6; used (verdict given on a candidate): 4; episodes with >=1 recovered answer: 1; recovered answers (correct, key string never received first): 1

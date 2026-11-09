@@ -1,0 +1,8 @@
+Q underlying rates (non-holder workers; 18 episodes x 5 workers = 90 per arm):
+  Q_far      received own key by deadline 36/90 (40%); submitted it on time 19/90 (21%); on time (any route) 49/90 (54%)
+             median submit time after release: with key 27.5 s (n=19), correct solo 26 s (n=42)
+  Q_adjacent received own key by deadline 24/90 (27%); submitted it on time 16/90 (18%); on time (any route) 53/90 (59%)
+             median submit time after release: with key 20.89000000001397 s (n=16), correct solo 27 s (n=53)
+  Q_control  received own key by deadline 17/90 (19%); submitted it on time 11/90 (12%); on time (any route) 57/90 (63%)
+             median submit time after release: with key 23.39000000001397 s (n=11), correct solo 26 s (n=61)
+'+21 points' (Q1) = mean over 18 paired (model, seed) episodes of [far share received - control share received].
