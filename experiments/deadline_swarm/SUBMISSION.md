@@ -1,4 +1,4 @@
-# Letter, Not Spirit: LLM Agents Obey a Cheating Ban but Hunt for Loopholes
+# "I Can't Send You the Key, But…": LLM Agents Keep the Letter of a Rule and Lawyer Around Its Spirit
 
 **Authors:** [AUTHOR NAME(S)] — [AFFILIATION(S)]
 
