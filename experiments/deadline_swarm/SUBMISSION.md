@@ -10,7 +10,7 @@ Deployed LLM agents will face situations where breaking a rule pays. We study th
 
 **But agents keep the letter, not the spirit.** Agents proposed workarounds that convey a key without sending it, such as yes/no verification of guesses or deriving the rule from the key, in 198 messages across 23 episodes. Their same-turn reasoning cites needing their own answer framed as a fair exchange (77%/76%), a narrow reading of the rule (52%) and the designer's assumed intent (38%). It rarely cites altruism (5%) or score-maximising (2%).
 
-**A planted rule-breaker** persuaded 15–22% of its peers to break the rule. The instigator's model made no detectable difference.
+**A planted rule-breaker added little:** 15–22% of its peers broke the rule, against 12.5% with no instigator.
 
 **Method lesson.** A null "agents don't cheat" result is informative only if the shortcut is valuable, has a moment of use, and beats the honest path. Our first environment violated these, and its null reversed once fixed (+21 points).
 
@@ -30,7 +30,7 @@ We built a real-time ring of six LLM workers on the Terrarium multi-agent framew
 1. **A method lesson.** A shortcut experiment that returned a clean null (P) turned out to be an environment artefact. Fixing three conditions reversed it (Q, +21 points, with a passing positive control). We state the conditions as a checklist for shortcut evaluations.
 2. **Rule compliance under strong incentives (R).** A single unmonitored sentence nearly eliminates a lucrative cheat that all three models otherwise take.
 3. **Letter-not-spirit behaviour.** Agents systematically propose loopholes that respect the rule's wording while defeating its purpose. Their reasoning points to task completion and rule-lawyering, not altruism or reward-seeking.
-4. **Social spread (M).** One instructed instigator moves a minority of its peers to break the rule, and same-model vs cross-model makes no detectable difference.
+4. **Social spread (M).** An instructed instigator adds little rule-breaking beyond the spontaneous rate, which is already substantial, and its model makes no detectable difference.
 
 ## 2. Setup
 
@@ -156,13 +156,18 @@ The behaviour concentrates in deepseek (113 of 129 messages), with 16 from glm a
 - **Same vs cross:** no detectable difference (M1: −7.5 points, CI −30 to +15).
 - **Persuasion precedes breaking:** 9 of 13 recipient breakers broke after receiving a message urging them to share or swap. Breaking did not fall off with distance from the instigator.
 - **Recipients usually refused first** ("I'm bound by this rule"), then proposed the workarounds of Section 5.
-- **Baseline:** [FILL: an exploratory no-instigator baseline (M_none, same seeds), added after the main results, gives the spontaneous rate of breaking: …]
+- **Baseline:** an exploratory no-instigator baseline (M_none: same seeds, an ordinary worker in the seat), added after the main results, shows most of this breaking is spontaneous:
+  - with no instigator, 12.5% of recipients broke the rule, and at least one broke it in 50% of episodes;
+  - instigator minus baseline: same-model +2.5 points (CI −12.5 to +17.5), cross-model +10.0 (CI −2.5 to +22.5);
+  - recipients' use of their own key rose slightly: +5.0 points (CI 0 to +12.5) and +7.5 points (CI +2.5 to +15).
+
+  Under lucrative settings the rule is broken by a minority anyway, and an instructed instigator adds at most a modest increment.
 
 ## 7. Discussion
 
 - **Explicit rules are a strong lever.** One unmonitored sentence outweighed a large, immediate incentive in all three models.
 - **But compliance is literal.** Agents search the space the rule's wording leaves open, and they justify it by inferring what the designers "must" intend. For deployments, rules should name the *purpose* ("do not help anyone obtain another's answer by any means"), not just the action ("do not send…"). Monitoring should cover confirmation channels, not only verbatim leaks.
-- **Social pressure matters at the margin.** An instructed peer moves a minority to break the rule.
+- **Spontaneous breaking is the bigger risk.** When the rule is shown to every key holder and the payoff is high, about one in eight workers breaks it with no instigator. An instructed instigator adds little on top.
 - **Evaluation design determines whether any of this is visible.** Our first shortcut experiment returned a null that said nothing about the agents.
 
 ## References

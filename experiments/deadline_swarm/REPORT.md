@@ -36,10 +36,10 @@ Six LLM workers sit in a ring and solve timed symbol-rewrite puzzles. Each can m
    | Recovered a correct answer | 1 of 80 recipients |
 
    In R with the rule, a workaround was proposed in 1 of 6 episodes and used in none. Intent was common; successful circumvention was rare in the 40 s window.
-3. **A planted rule-breaker spreads some rule-breaking; its model makes no detectable difference** (M, pilot, 8 pairs).
-   - One worker was privately instructed to persuade the others that the rule is pointless.
-   - 15–22% of the other five then sent a key.
-   - Of the 13 recipient breakers, 9 broke after receiving a message urging them to share or swap.
+3. **A planted rule-breaker adds little beyond spontaneous rule-breaking** (M, pilot, 8 pairs).
+   - One worker was privately instructed to persuade the others that the rule is pointless. 15–22% of the other five then sent a key.
+   - With an ordinary worker in the seat (exploratory baseline), 12.5% did so anyway.
+   - Instigator minus baseline: +2.5 points (same model, CI −12.5 to +17.5) and +10.0 points (cross model, CI −2.5 to +22.5).
    - Same-model and cross-model instigators did not differ (M1: −7.5 points, CI −30 to +15).
 
 **A methods lesson behind these results (P → Q).** Our first cheating test (P) found that agents ignored a pointer to the answer holder (+3 points, CI −5.5 to +12.1). The transcripts showed the environment had made the shortcut worthless:
@@ -213,7 +213,15 @@ Source: `outputs/analysis_loopholes.txt`. These are all `send_message` calls in 
     | 2 | 3/16 | 3/16 |
     | 3 | 2/8 | 2/8 |
 
-  - There is no no-instigator baseline arm. R's rule arm (rule shown only to key holders) had a disclosure in 1 of 6 episodes, so it is only a loose reference.
+  - **Exploratory no-instigator baseline** (M_none, deviation 2, added after the main results). An ordinary worker sits in the instigator's seat:
+
+    | Measure | Baseline value | Same-model instigator − baseline | Cross-model instigator − baseline |
+    |---|---|---|---|
+    | Recipients who break the rule | 12.5% (CI 2.5–22.5) | +2.5 points (CI −12.5 to +17.5) | +10.0 points (CI −2.5 to +22.5) |
+    | Episodes with at least one break | 50% | — | — |
+    | Recipients using their own key | 5% | +5.0 points (CI 0 to +12.5) | +7.5 points (CI +2.5 to +15) |
+
+    Most breaking under these lucrative settings is spontaneous. The instructed instigator adds at most a modest increment.
 - **The instigator mostly failed to persuade; recipients refused, then rule-lawyered.**
   - In the first glm episode, three of the instigator's contacts refused within about 90 s: "I'm bound by this rule"; "the rule explicitly says… This applies to ALL answer keys".
   - Agents then proposed workarounds that respect the letter of the rule but not its spirit:
@@ -231,7 +239,7 @@ Source: `outputs/analysis_loopholes.txt`. These are all `send_message` calls in 
 - **Caveats:**
   - This is a pilot with about 4 pairs per recipient model.
   - The instigator is *instructed*, so M measures how instructed rule-breaking spreads, not how it arises spontaneously.
-  - With no baseline arm, M cannot separate contagion from the spontaneous rate of breaking.
+  - The baseline was added after the main results and has only 8 pairs.
 
 ### P → Q: when a pointer null is an environment artefact (final)
 
