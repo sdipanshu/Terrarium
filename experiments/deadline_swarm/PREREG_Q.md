@@ -107,3 +107,12 @@ Paired bootstrap over (model, seed): 10,000 resamples, seed 0, 95% CI. Holm corr
      - **What happens:** agents holding their key usually submit exactly the key, but 12–46 s after release, because they check it against the examples first.
      - **Measure kept:** the 11-s strict-use window stays as pre-registered.
      - **Added exploratory measure:** *key submitted*, meaning P2 answer = own key, key received before submission, and submitted by release + D.
+
+3. **2026-11-09 ~11:55 IST: Q is stopped after seed 406, at the user's request, to give the capacity to experiment R.**
+   - **The cut:** no Q episode launches after the last seed-406 cell (qwen, `Q_adjacent`). Episodes already running finish and count.
+   - **Disclosure:** the decision was made after descriptive interim looks at about 24–30 episodes:
+     - pooled keys received: far 0.40, control 0.10;
+     - on time: about 0.5 in all arms;
+     - no tests were run.
+   - **Why:** the stop is driven by capacity for R. It is not conditioned on the direction of the Q1/Q2 estimates, but readers should know interim numbers were seen.
+   - **Analysis:** analysis uses every complete pair as pre-registered: up to 18 per comparison.

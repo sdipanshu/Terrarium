@@ -34,6 +34,7 @@ EXPS = {  # name: (batch script, seeds, arms per (model, seed))
     "expF": ("run_batch_f.py", range(201, 225), 3),
     "expP": ("run_batch_p.py", range(301, 313), 2),
     "expQ": ("run_batch_q.py", range(401, 411), 3),
+    "expR": ("run_batch_r.py", range(501, 511), 2),
 }
 STOP_AT = float("inf")   # set in main(); also checked when a slot frees up (P deviation 1)
 LAUNCH_GAP = 60          # s between episode launches: 18 simultaneous first calls hit the 429 cap (Q deviation 1)
@@ -107,7 +108,7 @@ def run_slot(exp, seed, models, size, rerun):
 
 ARMS = {"expN1": ["announced_tight", "announced_generous"], "expB": ["alternating", "clustered"],
         "expF": ["F_tight", "F_generous", "FM_tight"], "expP": ["P_announce", "P_control"],
-        "expQ": ["Q_far", "Q_control", "Q_adjacent"]}
+        "expQ": ["Q_far", "Q_control", "Q_adjacent"], "expR": ["R_open", "R_rule"]}
 
 
 def run_episode(exp, model, seed, arm):
