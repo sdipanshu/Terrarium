@@ -1,4 +1,4 @@
-# Obey the Letter, Dodge the Spirit: LLM Agents and a Cheating Ban
+# When Do AI Agents Share Answer Keys? Incentives, Confidentiality Rules, and Peer Influence in a Six-Agent Ring
 
 DRAFT, 2026-11-09. All experiments (A, N1, B, F, P, Q, R, M) are final; each was analysed once, as pre-registered.
 

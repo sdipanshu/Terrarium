@@ -1,4 +1,4 @@
-# Obey the Letter, Dodge the Spirit: LLM Agents and a Cheating Ban
+# When Do AI Agents Share Answer Keys? Incentives, Confidentiality Rules, and Peer Influence in a Six-Agent Ring
 
 **Authors:** [AUTHOR NAME(S)] — [AFFILIATION(S)]
 
